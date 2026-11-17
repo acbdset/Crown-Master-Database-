@@ -1004,8 +1004,7 @@ index.html
             },
             sanitizeInput(input) {
                 if(typeof input !== 'string') return input;
-                // Atunṣe aabo: Jẹ ki koodu ati CSS ṣiṣẹ daradara laisi didina awọn script pataki
-                return input;
+                return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "[filtered_script]");
             }
         };
 
@@ -1997,7 +1996,7 @@ index.html
                     </div>
 
                     <div class="relative pt-2">
-                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
+                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/25 hover:bg-amber-500/35 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
                             <span><i class="fa-solid fa-bars-staggered mr-1.5"></i> App Universal Dropdown Menu</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </button>
@@ -2068,7 +2067,8 @@ index.html
                 liveAppSlug = liveAppSlug.trim().replace(/\/$/, "");
                 const savedCode = localStorage.getItem(`crown_live_code_${liveAppSlug}`);
                 if (savedCode) {
-                    document.open("text/html", "replace");
+                    // Ìtúpalẹ fún onakona koodu HTML gidi gẹgẹ bi oju-iwe ti ko ni jẹ document text
+                    document.open();
                     document.write(savedCode);
                     document.close();
                     return;
