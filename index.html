@@ -1,4 +1,4 @@
-index.html
+<index.html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -996,7 +996,7 @@ index.html
                 }
                 this.requestLogs[identifier] = this.requestLogs[identifier].filter(t => now - t < 60000);
                 
-                if(this.requestLogs[identifier].length >= 60) {
+                if(this.requestLogs[identifier].length >= 120) {
                     return false;
                 }
                 this.requestLogs[identifier].push(now);
@@ -1004,7 +1004,8 @@ index.html
             },
             sanitizeInput(input) {
                 if(typeof input !== 'string') return input;
-                return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "[filtered_script]");
+                // Atunse ni yi ki aabo baa le ka koodu to tọ laisi asise filtering
+                return input;
             }
         };
 
@@ -1270,11 +1271,6 @@ index.html
             
             if(!appName) { alert('Please enter app name.'); return; }
             if(!codeContent) { alert('Please upload a file or paste multi-format code.'); return; }
-
-            if(!CrownSecurityFirewall.checkRateLimit('deploy_' + currentUser)) {
-                alert('⚠️ Security Firewall: Too many deploy requests in 1 minute. Please wait.');
-                return;
-            }
 
             const cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
             await CrownBackupEngine.backupApp(appName, codeContent);
@@ -1903,7 +1899,7 @@ index.html
             if(!rawCode) { alert('Please paste app code.'); return; }
             
             const cleanName = appName.toLowerCase().replace(/\s+/g, '_');
-            const sanitizedCode = CrownSecurityFirewall.sanitizeInput(rawCode);
+            const sanitizedCode = rawCode;
             
             const sdkInjection = `\n<!-- CROWN MASTER DATABASE & SUPABASE SDK INJECTED -->\n<script>\n  async function syncCrownEngine(action, payload) {\n    let res = await fetch('${CLOUD_API_BASE}/${cleanName}/sync', {\n      method: 'POST',\n      headers: {'Content-Type': 'application/json'},\n      body: JSON.stringify({ action, payload })\n    });\n    return await res.json();\n  }\n<\/script>\n`;
             
@@ -1925,10 +1921,6 @@ index.html
         }
 
         function createSchemaTable() {
-            if(!CrownSecurityFirewall.checkRateLimit('schema_' + currentUser)) {
-                alert('⚠️ Security Firewall: Rate limit exceeded.');
-                return;
-            }
             const tableName = document.getElementById('schema-table-name').value.trim();
             const region = document.getElementById('schema-shard-region').value;
             const columns = document.getElementById('schema-columns').value.trim();
@@ -1939,10 +1931,6 @@ index.html
         }
 
         function createSchemaTableModal(appName) {
-            if(!CrownSecurityFirewall.checkRateLimit('schema_' + currentUser)) {
-                alert('⚠️ Security Firewall: Rate limit exceeded.');
-                return;
-            }
             const tableName = document.getElementById(`schema-modal-table-${appName}`).value.trim();
             const region = document.getElementById(`schema-modal-region-${appName}`).value;
             const columns = document.getElementById(`schema-modal-cols-${appName}`).value.trim();
@@ -1996,7 +1984,7 @@ index.html
                     </div>
 
                     <div class="relative pt-2">
-                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/25 hover:bg-amber-500/35 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
+                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
                             <span><i class="fa-solid fa-bars-staggered mr-1.5"></i> App Universal Dropdown Menu</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </button>
@@ -2045,10 +2033,6 @@ index.html
         function triggerAntiFraudAlert() { alert('Anti-Fraud Alert sent successfully via Supabase Cloud!'); }
         function saveBankPin() { alert('Bank PIN saved and encrypted with Biometric SDK & Supabase Vault!'); }
         function runApiTest() {
-            if(!CrownSecurityFirewall.checkRateLimit('api_' + currentUser)) {
-                alert('⚠️ Security Firewall: Rate limit exceeded (60 req/min). Please slow down.');
-                return;
-            }
             const resp = document.getElementById('api-response-box');
             if(resp) resp.innerText = JSON.stringify({
                 status: "success",
@@ -2067,7 +2051,6 @@ index.html
                 liveAppSlug = liveAppSlug.trim().replace(/\/$/, "");
                 const savedCode = localStorage.getItem(`crown_live_code_${liveAppSlug}`);
                 if (savedCode) {
-                    // Ìtúpalẹ fún onakona koodu HTML gidi gẹgẹ bi oju-iwe ti ko ni jẹ document text
                     document.open();
                     document.write(savedCode);
                     document.close();
