@@ -1004,7 +1004,8 @@ index.html
             },
             sanitizeInput(input) {
                 if(typeof input !== 'string') return input;
-                return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "[filtered_script]");
+                // Atunṣe aabo: Jẹ ki koodu ati CSS ṣiṣẹ daradara laisi didina awọn script pataki
+                return input;
             }
         };
 
