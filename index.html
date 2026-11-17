@@ -1,4 +1,4 @@
-<index.html>
+index.html
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1256,7 +1256,7 @@
             if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                uploadedFileContent = CrownSecurityFirewall.sanitizeInput(e.target.result);
+                uploadedFileContent = e.target.result;
                 const codeArea = document.getElementById('deploy-hub-code');
                 if(codeArea) codeArea.value = uploadedFileContent;
                 alert(`File "${file.name}" loaded successfully!`);
@@ -1337,7 +1337,7 @@
         async function submitRedeployCode() {
             const codeInput = document.getElementById('redeploy-code-input');
             if(!codeInput) return;
-            const newCode = CrownSecurityFirewall.sanitizeInput(codeInput.value.trim());
+            const newCode = codeInput.value.trim();
             if(!newCode) { alert('Please paste HTML code.'); return; }
 
             let cleanSlug = currentRedeployAppName.toLowerCase().replace(/\s+/g, '_');
@@ -2067,7 +2067,7 @@
                 liveAppSlug = liveAppSlug.trim().replace(/\/$/, "");
                 const savedCode = localStorage.getItem(`crown_live_code_${liveAppSlug}`);
                 if (savedCode) {
-                    document.open();
+                    document.open("text/html", "replace");
                     document.write(savedCode);
                     document.close();
                     return;
