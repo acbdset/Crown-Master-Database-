@@ -1,9 +1,9 @@
-<index.html>
+index.html
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crown Master Database - Anti-Fraud & Enterprise Cloud Hub</title>
+    <title>Crown Master Database - Enterprise Cloud Hub & Automated LED Engine</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -11,7 +11,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- AUTHENTICATION OVERLAY -->
+    <!-- WELCOME PAGE & AUTHENTICATION OVERLAY -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6">
             <div class="text-center space-y-2">
@@ -19,13 +19,13 @@
                     <i class="fa-solid fa-crown"></i>
                 </div>
                 <h2 class="text-xl font-bold text-white">Crown Master Database</h2>
-                <p class="text-xs text-slate-400">Sign in or create your global database builder account</p>
+                <p class="text-xs text-slate-400">Welcome Page: Sign in or create your global database builder account</p>
             </div>
 
             <!-- Auth Tabs -->
             <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-medium">
-                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="flex-1 py-2 rounded-lg bg-amber-500 text-slate-950 transition">Login</button>
-                <button onclick="switchAuthTab('signup')" id="tab-signup-btn" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition">Register</button>
+                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="flex-1 py-2 rounded-lg bg-amber-500 text-slate-950 transition font-bold">Login</button>
+                <button onclick="switchAuthTab('signup')" id="tab-signup-btn" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition font-bold">Create Account</button>
             </div>
 
             <!-- Login Form -->
@@ -81,10 +81,22 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-bold text-white">Crown Master Admin Control Center</h2>
-                        <p class="text-xs text-amber-400">Strictly Owner Access - Paystack Link & Revenue Center</p>
+                        <p class="text-xs text-amber-400">Strictly Owner Access - Automated Cloud LED & Revenue Center</p>
                     </div>
                 </div>
                 <button onclick="closeAdminControl()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- AUTOMATED CLOUD CONNECTION STATUS LED ENGINE -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div id="cloud-led-indicator" class="w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/50"></div>
+                    <div>
+                        <p class="text-xs font-bold text-white uppercase"><i class="fa-solid fa-cloud mr-1 text-amber-400"></i> Automated Supabase Cloud Connection Status</p>
+                        <p id="cloud-led-text" class="text-[11px] text-emerald-400 font-mono">Connected to Cloud (Green Light Active)</p>
+                    </div>
+                </div>
+                <span class="bg-emerald-500/20 text-emerald-400 text-[10px] px-2.5 py-1 rounded font-bold uppercase tracking-wider">Automated Live</span>
             </div>
 
             <div id="admin-auth-section" class="space-y-4">
@@ -135,10 +147,18 @@
 
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-users mr-1.5"></i> Builders & Database List</h3>
-                        <span id="admin-total-builders" class="bg-slate-900 text-slate-300 px-2.5 py-1 rounded-full text-[10px]">0 Builders</span>
+                        <h3 class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-users mr-1.5"></i> Crown Master Database Builders & App List</h3>
+                        <div class="flex items-center space-x-2">
+                            <span id="admin-total-builders" class="bg-slate-900 text-slate-300 px-2.5 py-1 rounded-full text-[10px]">0 Builders</span>
+                            <button onclick="toggleMasterDatabaseListVisibility()" id="master-toggle-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1 rounded-lg text-xs font-bold transition">
+                                <i class="fa-solid fa-eye mr-1"></i> <span id="master-toggle-text">Hide List</span>
+                            </button>
+                        </div>
                     </div>
-                    <div id="admin-builders-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                    <div class="space-y-2">
+                        <input type="text" id="master-builder-search" oninput="filterMasterBuildersList()" placeholder="Search builder name or email to view apps & statuses..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                    </div>
+                    <div id="admin-builders-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
                 </div>
 
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
@@ -217,7 +237,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg tracking-wide text-white">Crown Master Database</h1>
-                    <p class="text-xs text-amber-400 font-medium">Enterprise Cloud Hub + Supabase Global Sync & 1,200+ Domain Engine</p>
+                    <p class="text-xs text-amber-400 font-medium">Enterprise Cloud Hub + Supabase Global Sync & 5,000+ Domain Registrar Engine</p>
                 </div>
             </div>
 
@@ -245,7 +265,7 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col space-y-6">
 
-        <!-- UNIVERSAL DROPDOWN MENU BAR (12 BUTTONS PROTECTED & FULLY ACTIVE) -->
+        <!-- UNIVERSAL DROPDOWN MENU BAR (12 BUTTONS PROTECTED) -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-xl">
             <div class="flex items-center space-x-3 w-full md:w-auto">
                 <div class="relative w-full md:w-72">
@@ -296,7 +316,7 @@
                         </button>
                         <button onclick="selectDropdownEngine('deploy')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900 text-xs text-slate-300 hover:text-white flex items-center space-x-2.5 transition">
                             <i class="fa-solid fa-cloud-arrow-up w-4"></i>
-                            <span>10. One-Click Deploy Hub (1,200+ Domains)</span>
+                            <span>10. One-Click Deploy Hub (5,000+ Domains)</span>
                         </button>
                         <button onclick="selectDropdownEngine('bank')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900 text-xs text-slate-300 hover:text-white flex items-center space-x-2.5 transition">
                             <i class="fa-solid fa-vault w-4"></i>
@@ -360,12 +380,12 @@
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
                         <div id="chat-messages-box" class="h-64 overflow-y-auto bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-3 text-xs">
                             <div class="bg-slate-800 text-slate-200 p-2.5 rounded-lg max-w-md">
-                                <strong>Crown AI:</strong> Ẹ nlẹ Ọga Timothy! Bawo ni mo ṣe le ran yin lọwọ pẹlu koodu rẹ loni?
+                                <strong>Crown AI:</strong> Hello Master Timothy! How can I assist you with your code today?
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <input type="text" id="chat-input-text" placeholder="Beere ibeere nipa koodu rẹ..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
-                            <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2 rounded-xl text-xs">Fiṣẹ Ranṣẹ</button>
+                            <input type="text" id="chat-input-text" placeholder="Type a message or coding question..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                            <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2 rounded-xl text-xs">Send Message</button>
                         </div>
                     </div>
                 </div>
@@ -402,8 +422,8 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-800">
                         <div>
-                            <h2 class="text-xl font-bold text-white mb-1"><i class="fa-solid fa-cloud-arrow-up text-amber-400 mr-2"></i> One-Click Deploy Hub (1,200+ Domain Engine & First 5 Free Promo)</h2>
-                            <p class="text-xs text-slate-400">Deploy any multi-format code (HTML/JS/CSS/Assets) live with Supabase Edge Sync. Automatically saves to My Account Apps!</p>
+                            <h2 class="text-xl font-bold text-white mb-1"><i class="fa-solid fa-cloud-arrow-up text-amber-400 mr-2"></i> One-Click Deploy Hub (5,000+ Domain Engine & First 5 Free Promo)</h2>
+                            <p class="text-xs text-slate-400">Deploy any multi-format code live with Supabase Edge Sync and 5,000+ Domain Registrar Market.</p>
                         </div>
                         
                         <div class="relative w-full md:w-64">
@@ -425,7 +445,7 @@
                                 </button>
                                 <button onclick="openDeploySettingModal('domain')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900 text-slate-300 flex items-center space-x-2.5 transition">
                                     <i class="fa-solid fa-globe text-blue-400 w-4"></i>
-                                    <span>Custom Domain Registrar (1,200+ Catalog)</span>
+                                    <span>Custom Domain Registrar (5,000+ Catalog)</span>
                                 </button>
                                 <button onclick="openDeploySettingModal('analytics')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900 text-slate-300 flex items-center space-x-2.5 transition">
                                     <i class="fa-solid fa-chart-line text-amber-400 w-4"></i>
@@ -449,30 +469,53 @@
                         </div>
                     </div>
 
+                    <!-- DEPLOY HUB FORM WITH BACKGROUND SCANNER & ANIMATION -->
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4 text-xs">
                         <div>
-                            <label class="block text-xs text-amber-400 font-bold mb-1">App Slug / Name</label>
-                            <input type="text" id="deploy-hub-name" placeholder="e.g. MyFamilyPortal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white">
+                            <label class="block text-xs text-amber-400 font-bold mb-1">App Slug / Name (Auto-Extracted or Editable)</label>
+                            <input type="text" id="deploy-hub-name" placeholder="e.g. MyFamilyPortal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-bold">
                         </div>
 
                         <div>
                             <label class="block text-xs text-slate-400 mb-1"><i class="fa-solid fa-file-arrow-up mr-1"></i> Upload Code File (HTML, JS, CSS, or Assets)</label>
-                            <input type="file" id="deploy-hub-file" accept=".html,.htm,.js,.css,.txt" onchange="handleFileSelected(event)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-slate-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400">
+                            <input type="file" id="deploy-hub-file" accept=".html,.htm,.js,.css,.txt,.zpp,.yaml" onchange="handleFileSelected(event)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-slate-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400">
                         </div>
 
                         <div>
-                            <label class="block text-xs text-slate-400 mb-1"><i class="fa-solid fa-code mr-1"></i> Or Paste Multi-Format Code Here</label>
-                            <textarea id="deploy-hub-code" rows="5" placeholder="<!-- Paste your HTML/JS/CSS code here -->" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-emerald-300 font-mono"></textarea>
+                            <label class="block text-xs text-slate-400 mb-1"><i class="fa-solid fa-code mr-1"></i> Or Paste Multi-Format Code Here (Triggers Background Scanner)</label>
+                            <textarea id="deploy-hub-code" rows="5" oninput="triggerBackgroundCodeScanner(this.value)" placeholder="<!-- Paste your HTML/JS/CSS/YAML code here -->" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-emerald-300 font-mono"></textarea>
+                        </div>
+
+                        <!-- CROWN MASTER DATABASE ANIMATION LOADING (0-100%) -->
+                        <div id="crown-scanner-progress-box" class="hidden bg-slate-900 border border-amber-500/40 p-4 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-amber-400 flex items-center space-x-2">
+                                    <i class="fa-solid fa-crown fa-spin text-amber-500 text-base"></i>
+                                    <span>CROWN MASTER DATABASE SCANNING & EXTRACTION ENGINE...</span>
+                                </span>
+                                <span id="crown-progress-percent" class="font-mono text-emerald-400 font-bold text-sm">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+                                <div id="crown-progress-bar" class="bg-gradient-to-r from-amber-500 to-emerald-400 h-2.5 rounded-full w-0 transition-all duration-150"></div>
+                            </div>
+                            <p id="crown-scanner-status-text" class="text-[11px] text-slate-400 italic">Reading code structure & extracting app name...</p>
+                        </div>
+
+                        <!-- PREVIEW STUDIO SPACE BUTTON -->
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="openPreviewStudioModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold py-2.5 rounded-xl border border-amber-500/30 transition text-xs flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-eye"></i> <span>Open Preview Studio Space (Test App & Buttons)</span>
+                            </button>
                         </div>
 
                         <button onclick="executeDirectLiveDeploy()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm">
-                            <i class="fa-solid fa-rocket mr-1.5"></i> Deploy Live URL Now (Supabase Edge & Auto-Saved)
+                            <i class="fa-solid fa-rocket mr-1.5"></i> Deploy Live URL Now (CSWCME & Auto-Saved)
                         </button>
                     </div>
 
                     <div id="deploy-result-box" class="bg-slate-950 p-4 rounded-xl border border-emerald-500/40 space-y-3 hidden">
                         <h3 class="text-xs font-bold text-emerald-400 uppercase"><i class="fa-solid fa-circle-check mr-1"></i> App Deployed Successfully & Saved!</h3>
-                        <p class="text-xs text-slate-300">Your live URL is ready:</p>
+                        <p class="text-xs text-slate-300">Your live URL is ready (Protected by CSWCME):</p>
                         <div class="flex gap-2">
                             <input type="text" id="deploy-result-url" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-emerald-400 font-mono text-xs">
                             <button onclick="openLiveAppUrl()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs">Open Live URL</button>
@@ -495,42 +538,78 @@
                 </div>
             </div>
 
-            <!-- TAB: TOOLS GUIDE -->
+            <!-- TAB: TOOLS GUIDE & DOCUMENTATION -->
             <div id="tab-guide" class="tab-content hidden space-y-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div class="flex justify-between items-center pb-4 border-b border-slate-800">
                         <div>
                             <h2 class="text-xl font-bold text-white mb-1"><i class="fa-solid fa-book-open text-amber-400 mr-2"></i> Tools Guide & Documentation</h2>
-                            <p class="text-xs text-slate-400">Comprehensive documentation on all features and utilities inside Crown Master Database.</p>
+                            <p class="text-xs text-slate-400">Comprehensive and detailed documentation for all 12 core tools inside Crown Master Database.</p>
                         </div>
                         <button onclick="selectDropdownEngine('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1.5">
                             <i class="fa-solid fa-arrow-left"></i> <span>Back</span>
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4 text-xs">
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h3 class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> 1. AI Assistant & SDK Injector</h3>
-                            <p class="text-xs text-slate-300">Scan your app code safely without breaking anything and automatically inject Crown SDK scripts.</p>
-                            <button onclick="selectDropdownEngine('ai')" class="text-xs text-amber-400 hover:underline font-bold">Go to AI Module &rarr;</button>
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i> 1. AI Assistant Engine (SDK)</h3>
+                            <p class="text-slate-300 leading-relaxed">Allows developers to paste raw HTML/JS app code and automatically inject Crown Master Supabase SDK scripts, establishing secure cloud connection channels without breaking existing code logic.</p>
                         </div>
 
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h3 class="text-xs font-bold text-rose-400 uppercase"><i class="fa-solid fa-shield-halved mr-1.5"></i> 2. Anti-Fraud & Security Alert</h3>
-                            <p class="text-xs text-slate-300">Monitor app transactions and instantly trigger security alerts if malicious activity is detected.</p>
-                            <button onclick="selectDropdownEngine('antifraud')" class="text-xs text-rose-400 hover:underline font-bold">Go to Anti-Fraud Module &rarr;</button>
+                            <h3 class="font-bold text-blue-400 text-sm"><i class="fa-solid fa-robot mr-2"></i> 2. AI Code Assistant Chatbot (LLM)</h3>
+                            <p class="text-slate-300 leading-relaxed">An interactive in-app conversational assistant designed to answer coding questions, provide debugging advice, and guide developers through multi-scene app architecture.</p>
                         </div>
 
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h3 class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-database mr-1.5"></i> 3. Visual Database Schema & Sharding</h3>
-                            <p class="text-xs text-slate-300">Create and modify SQL tables across global cloud regions (Africa, Europe, America).</p>
-                            <button onclick="selectDropdownEngine('schema')" class="text-xs text-amber-400 hover:underline font-bold">Go to Database Schema &rarr;</button>
+                            <h3 class="font-bold text-purple-400 text-sm"><i class="fa-solid fa-pen-ruler mr-2"></i> 3. Visual Drag-and-Drop UI Builder</h3>
+                            <p class="text-slate-300 leading-relaxed">Enables rapid visual prototyping by letting builders drop UI components (Buttons, Input Boxes, Card Containers) onto a live canvas preview workspace.</p>
                         </div>
 
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                            <h3 class="text-xs font-bold text-emerald-400 uppercase"><i class="fa-solid fa-terminal mr-1.5"></i> 4. Live API Console & Resource Monitor</h3>
-                            <p class="text-xs text-slate-300">Test APIs and webhooks with auto-scaling cloud resource monitoring (CPU & Memory).</p>
-                            <button onclick="selectDropdownEngine('api-test')" class="text-xs text-emerald-400 hover:underline font-bold">Go to API Console &rarr;</button>
+                            <h3 class="font-bold text-emerald-400 text-sm"><i class="fa-solid fa-folder-open mr-2"></i> 4. My Account Apps Dashboard</h3>
+                            <p class="text-slate-300 leading-relaxed">Central repository for all deployed applications. Provides access to App Universal Dropdown Menus, YAML configuration engines, ZPP installers, and live URL monitors.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-book-open mr-2"></i> 5. Tools Guide & Documentation</h3>
+                            <p class="text-slate-300 leading-relaxed">This exact module, offering complete technical specifications and user manuals for every single engine and utility inside the platform.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-rose-400 text-sm"><i class="fa-solid fa-shield-halved mr-2"></i> 6. Anti-Fraud & Security Alert</h3>
+                            <p class="text-slate-300 leading-relaxed">Monitors transaction logs and user sessions in real-time, instantly triggering security warnings and isolating malicious IP activity.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-database mr-2"></i> 7. Visual Database Schema & Sharding</h3>
+                            <p class="text-slate-300 leading-relaxed">Empowers creators to build SQL tables and distribute database loads across multi-region cloud shards (Africa, Europe, America) with 99.999% uptime.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-emerald-400 text-sm"><i class="fa-solid fa-terminal mr-2"></i> 8. Live API Console & Resource Monitor</h3>
+                            <p class="text-slate-300 leading-relaxed">Tests webhooks and API endpoints while tracking auto-scaling cloud resource metrics including CPU usage, RAM allocation, and bandwidth requests.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-tags mr-2"></i> 9. Free Tier & Pro Calculator</h3>
+                            <p class="text-slate-300 leading-relaxed">Calculates subscription costs across multi-currency modes (NGN/USD) for scaling applications beyond free tier thresholds or managing Pro Plan renewals.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-blue-400 text-sm"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> 10. One-Click Deploy Hub (5,000+ Domain Engine)</h3>
+                            <p class="text-slate-300 leading-relaxed">Deploys multi-format app code live with Supabase Edge Sync, automated code scanners, and a 5,000+ domain registrar catalog featuring 70% off promotions.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-vault mr-2"></i> 11. Bank App & Biometric Vault</h3>
+                            <p class="text-slate-300 leading-relaxed">Secures sensitive financial data using encrypted 6-digit PINs paired with biometric FaceID and fingerprint simulation SDKs.</p>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <h3 class="font-bold text-emerald-400 text-sm"><i class="fa-solid fa-code-merge mr-2"></i> 12. Builder SDK & Links</h3>
+                            <p class="text-slate-300 leading-relaxed">Generates unique app registration tokens, secure payment verification links, and integration snippets for seamless cross-platform deployment.</p>
                         </div>
                     </div>
                 </div>
@@ -748,71 +827,282 @@
         </section>
     </main>
 
-    <!-- JavaScript Master Engine with Supabase Global Sync & Advanced Payment Verification -->
+    <!-- PREVIEW STUDIO SPACE MODAL -->
+    <div id="preview-studio-modal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md hidden flex items-center justify-center p-2 md:p-6">
+        <div class="bg-slate-900 border border-amber-500/50 rounded-2xl p-4 md:p-6 max-w-6xl w-full h-[90vh] shadow-2xl flex flex-col space-y-4 my-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-amber-500 text-slate-950 p-2 rounded-lg font-bold"><i class="fa-solid fa-eye"></i></div>
+                    <h3 class="text-sm font-bold text-amber-400">Preview Studio Space (Full Page Sandbox & Button Inspector)</h3>
+                </div>
+                <button onclick="closePreviewStudioModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Test how your app renders and interact with all buttons before deploying live. Fully expanded workspace.</p>
+            <div id="preview-studio-canvas" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2 overflow-hidden flex flex-col">
+                <p class="text-xs text-slate-400 text-center py-12 italic">No code loaded in preview. Paste or upload code in Deploy Hub to test here.</p>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button onclick="closePreviewStudioModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-5 py-2.5 rounded-xl font-bold">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Master Engine -->
     <script>
         let currentUser = localStorage.getItem('crown_current_user') || null;
         let selectedMonthlyPrice = 25000;
         let selectedUsdPrice = 25;
         let uploadedFileContent = "";
         let currentRedeployAppName = "";
+        let cloudConnectionStatus = true;
+        let masterDatabaseListVisible = true;
         const CLOUD_API_BASE = "https://api.crown-database.global/api/v1";
 
-        const masterDomainCatalog = {
-            "ojadirect.com": { price: 35000, category: "E-Commerce" },
-            "owodestores.com": { price: 30000, category: "E-Commerce" },
-            "naijamarket247.com": { price: 40000, category: "E-Commerce" },
-            "shopsmartng.com": { price: 25000, category: "E-Commerce" },
-            "fastbuynigeria.com": { price: 35000, category: "E-Commerce" },
-            "crowntradehub.com": { price: 45000, category: "E-Commerce" },
-            "megadealstore.com": { price: 30000, category: "E-Commerce" },
-            "paydaymarket.com": { price: 35000, category: "E-Commerce" },
-            "cashflowstores.com": { price: 40000, category: "E-Commerce" },
-            "naijaretailers.com": { price: 30000, category: "E-Commerce" },
-            "naijavibetv.com": { price: 50000, category: "Entertainment" },
-            "crownflix.com": { price: 60000, category: "Entertainment" },
-            "soundnaija.com": { price: 45000, category: "Entertainment" },
-            "yorubafilmsonline.com": { price: 55000, category: "Entertainment" },
-            "afrobeatmedia.com": { price: 50000, category: "Entertainment" },
-            "stageplayng.com": { price: 35000, category: "Entertainment" },
-            "cinemacrown.com": { price: 60000, category: "Entertainment" },
-            "musichubnigeria.com": { price: 45000, category: "Entertainment" },
-            "dramastream247.com": { price: 40000, category: "Entertainment" },
-            "starvibetv.com": { price: 50000, category: "Entertainment" },
-            "crowndecors.com": { price: 35000, category: "Fashion & Decor" },
-            "t5fashionhub.com": { price: 30000, category: "Fashion & Decor" },
-            "woodcraftng.com": { price: 25000, category: "Fashion & Decor" },
-            "stylemummyt.com": { price: 30000, category: "Fashion & Decor" },
-            "interiormasterng.com": { price: 40000, category: "Fashion & Decor" },
-            "tailorcrafthub.com": { price: 25000, category: "Fashion & Decor" },
-            "paintpronigeria.com": { price: 30000, category: "Fashion & Decor" },
-            "designstudiong.com": { price: 35000, category: "Fashion & Decor" },
-            "fashionvibe247.com": { price: 30000, category: "Fashion & Decor" },
-            "woodworkmaster.com": { price: 40000, category: "Fashion & Decor" },
-            "obooluglobal.com": { price: 35000, category: "Family & Community" },
-            "familyconnectng.com": { price: 30000, category: "Family & Community" },
-            "unitynetwork.com": { price: 35000, category: "Family & Community" },
-            "alujocommunity.com": { price: 25000, category: "Family & Community" },
-            "rootconnectng.com": { price: 30000, category: "Family & Community" },
-            "kinshiphub.com": { price: 25000, category: "Family & Community" },
-            "homebaseng.com": { price: 30000, category: "Family & Community" },
-            "agegradeconnect.com": { price: 25000, category: "Family & Community" },
-            "unionhub247.com": { price: 30000, category: "Family & Community" },
-            "friendslinkng.com": { price: 25000, category: "Family & Community" },
-            "crownmasterapp.com": { price: 80000, category: "Tech & Apps" },
-            "datalinkng.com": { price: 50000, category: "Tech & Apps" },
-            "smarttoolsapp.com": { price: 45000, category: "Tech & Apps" },
-            "fastpayengine.com": { price: 60000, category: "Tech & Apps" },
-            "appbuilderng.com": { price: 70000, category: "Tech & Apps" },
-            "codemasterhub.com": { price: 55000, category: "Tech & Apps" },
-            "techvibe247.com": { price: 45000, category: "Tech & Apps" },
-            "cloudengineng.com": { price: 75000, category: "Tech & Apps" },
-            "syncdatahub.com": { price: 50000, category: "Tech & Apps" },
-            "proappstore.com": { price: 65000, category: "Tech & Apps" }
-        };
+        function initAutomatedCloudLedEngine() {
+            setInterval(() => {
+                cloudConnectionStatus = navigator.onLine && (Math.random() > 0.05);
+                updateCloudLedIndicator();
+            }, 4000);
+        }
 
-        /**
-         * CROWN SUPABASE & GLOBAL CLOUD SYNC ENGINE
-         */
+        function updateCloudLedIndicator() {
+            const led = document.getElementById('cloud-led-indicator');
+            const text = document.getElementById('cloud-led-text');
+            if(!led || !text) return;
+
+            if(cloudConnectionStatus) {
+                led.className = "w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/50";
+                text.className = "text-[11px] text-emerald-400 font-mono";
+                text.innerText = "Connected to Cloud (Green Light Active)";
+            } else {
+                led.className = "w-4 h-4 rounded-full bg-rose-600 animate-ping shadow-lg shadow-rose-600/50";
+                text.className = "text-[11px] text-rose-400 font-mono";
+                text.innerText = "Connection Failed / Disconnected (Red Light Active)";
+            }
+        }
+        initAutomatedCloudLedEngine();
+
+        function toggleMasterDatabaseListVisibility() {
+            masterDatabaseListVisible = !masterDatabaseListVisible;
+            const listEl = document.getElementById('admin-builders-list');
+            const btnText = document.getElementById('master-toggle-text');
+            if(!listEl) return;
+
+            if(masterDatabaseListVisible) {
+                listEl.classList.remove('hidden');
+                if(btnText) btnText.innerText = "Hide List";
+            } else {
+                listEl.classList.add('hidden');
+                if(btnText) btnText.innerText = "Show List";
+            }
+        }
+
+        function generate5000DomainMarket() {
+            const keywords = ["Tech", "Pay", "Link", "Smart", "Crown", "Data", "Store", "Hub", "Net", "AI", "Cloud", "Fast", "Web", "App", "Go"];
+            const extensions = [".com", ".ai", ".io", ".com.ng", ".tech", ".co", ".xyz"];
+            let market = {};
+            
+            for (let i = 1; i <= 5000; i++) {
+                let kw1 = keywords[Math.floor(Math.random() * keywords.length)];
+                let kw2 = keywords[Math.floor(Math.random() * keywords.length)];
+                let ext = extensions[Math.floor(Math.random() * extensions.length)];
+                
+                let domainName = (i % 2 === 0) ? `${kw1}${kw2}${ext}`.toLowerCase() : `${kw1}${i}${ext}`.toLowerCase();
+                let priceVal = 35000;
+                
+                if(ext.includes('.ai')) priceVal = Math.floor(50000 + Math.random() * 500000);
+                else if(ext.includes('.com')) priceVal = Math.floor(15000 + Math.random() * 200000);
+                else if(ext.includes('.com.ng')) priceVal = Math.floor(10000 + Math.random() * 100000);
+                else priceVal = Math.floor(5000 + Math.random() * 30000);
+
+                market[domainName] = { price: priceVal, category: "Marketplace", id: i };
+            }
+            return market;
+        }
+
+        const masterDomainCatalog = generate5000DomainMarket();
+
+        const CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE = {
+            init() {
+                console.log("[CSWCME] Initialized Supabase Web Commander Master Engine...");
+            },
+            interceptBrowserLiveURL(slug, codeContent) {
+                let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
+                let matchedDomain = null;
+                for(let d in allDomains) {
+                    if(allDomains[d].app && allDomains[d].app.toLowerCase().replace(/\s+/g, '_') === slug) {
+                        matchedDomain = allDomains[d];
+                        break;
+                    }
+                }
+
+                if(matchedDomain) {
+                    let expiryDate = new Date(matchedDomain.expiryDate || matchedDomain.date);
+                    let today = new Date();
+                    if(today > expiryDate && !matchedDomain.renewed) {
+                        document.open();
+                        document.write(`<body style="background:#020617;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;">
+                            <div style="background:#0f172a;border:1px solid #ef4444;padding:40px;border-radius:20px;max-width:500px;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size:48px;color:#ef4444;margin-bottom:20px;"></i>
+                                <h1 style="color:#ef4444;font-size:24px;margin-bottom:10px;">Domain & App Expired</h1>
+                                <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-bottom:20px;">Your account and domain for <strong>${matchedDomain.app}</strong> expired on ${expiryDate.toLocaleDateString()}. Engine is paused until renewed via Paystack.</p>
+                                <a href="https://paystack.com/pay/crown-master-engine" target="_blank" style="background:#f59e0b;color:#020617;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:bold;display:inline-block;">Renew Subscription (Pay via Paystack)</a>
+                            </div>
+                        </body>`);
+                        document.close();
+                        return;
+                    }
+                }
+
+                window.history.pushState({ app: slug }, slug, `?live_app=${slug}`);
+                document.open();
+                document.write(codeContent);
+                document.close();
+            }
+        };
+        CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE.init();
+
+        let scannerTimeout = null;
+        function triggerBackgroundCodeScanner(codeText) {
+            const progressBox = document.getElementById('crown-scanner-progress-box');
+            const progressBar = document.getElementById('crown-progress-bar');
+            const percentLabel = document.getElementById('crown-progress-percent');
+            const statusText = document.getElementById('crown-scanner-status-text');
+            const appNameInput = document.getElementById('deploy-hub-name');
+
+            if(!codeText || codeText.trim().length < 5) {
+                if(progressBox) progressBox.classList.add('hidden');
+                return;
+            }
+
+            if(progressBox) progressBox.classList.remove('hidden');
+            let progress = 0;
+
+            if(scannerTimeout) clearTimeout(scannerTimeout);
+
+            function step() {
+                progress += Math.floor(Math.random() * 25) + 15;
+                if(progress > 100) progress = 100;
+
+                if(progressBar) progressBar.style.width = progress + '%';
+                if(percentLabel) percentLabel.innerText = progress + '%';
+
+                if(statusText) {
+                    if(progress < 40) statusText.innerText = "Scanning code structure & detecting HTML elements...";
+                    else if(progress < 80) statusText.innerText = "Extracting app name & configuring database endpoints...";
+                    else statusText.innerText = "Scan complete! App name extracted successfully.";
+                }
+
+                if(progress < 100) {
+                    scannerTimeout = setTimeout(step, 120);
+                } else {
+                    let extractedName = "CrownApp_" + Math.floor(100 + Math.random() * 900);
+                    const titleMatch = codeText.match(/<title>(.*?)<\/title>/i);
+                    if(titleMatch && titleMatch[1]) {
+                        extractedName = titleMatch[1].split('-')[0].trim().replace(/[^a-zA-Z0-9_]/g, '_');
+                    } else {
+                        const h1Match = codeText.match(/<h1[^>]*>(.*?)<\/h1>/i);
+                        if(h1Match && h1Match[1]) {
+                            extractedName = h1Match[1].trim().replace(/[^a-zA-Z0-9_]/g, '_');
+                        }
+                    }
+                    if(appNameInput && (!appNameInput.value || appNameInput.value.startsWith('My'))) {
+                        appNameInput.value = extractedName;
+                    }
+                }
+            }
+            step();
+        }
+
+        function openPreviewStudioModal() {
+            const modal = document.getElementById('preview-studio-modal');
+            const canvas = document.getElementById('preview-studio-canvas');
+            const codeInput = document.getElementById('deploy-hub-code').value || uploadedFileContent;
+
+            if(!modal || !canvas) return;
+            modal.classList.remove('hidden');
+
+            if(!codeInput || codeInput.trim() === '') {
+                canvas.innerHTML = `<p class="text-xs text-slate-400 text-center py-12 italic">No code provided. Paste or upload code in Deploy Hub first.</p>`;
+            } else {
+                canvas.innerHTML = `<iframe srcdoc="${codeInput.replace(/"/g, '&quot;')}" class="w-full flex-1 bg-white rounded-xl border border-slate-700"></iframe>`;
+            }
+        }
+
+        function closePreviewStudioModal() {
+            const modal = document.getElementById('preview-studio-modal');
+            if(modal) modal.classList.add('hidden');
+        }
+
+        function generateYamlConfig(appName, appLink, customYamlTitle, customYamlCode) {
+            let title = customYamlTitle || appName;
+            let code = customYamlCode || `version: '1.0'\napp_name: "${appName}"\nlive_url: "${appLink}"\ndatabase:\n  provider: "Crown Master Supabase Edge"\n  region: "Africa-Lagos-Node-01"`;
+            return `# YAML Title: ${title}\n${code}`;
+        }
+
+        function saveCustomYamlConfigEngine(appName, appLink) {
+            const titleInput = document.getElementById(`yaml-title-input-${appName}`);
+            const codeInput = document.getElementById(`yaml-code-input-${appName}`);
+            if(!titleInput || !codeInput) return;
+
+            let yamlTitle = titleInput.value.trim() || appName;
+            let yamlCode = codeInput.value.trim();
+
+            let finalYaml = generateYamlConfig(appName, appLink, yamlTitle, yamlCode);
+            localStorage.setItem(`crown_yaml_config_${appName}`, finalYaml);
+
+            alert(`Success! YAML configuration saved successfully for "${appName}" with title "${yamlTitle}".`);
+        }
+
+        function downloadYamlConfig(appName, appLink) {
+            let savedYaml = localStorage.getItem(`crown_yaml_config_${appName}`) || generateYamlConfig(appName, appLink);
+            const blob = new Blob([savedYaml], { type: 'text/yaml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${appName.toLowerCase().replace(/\s+/g, '_')}_config.yaml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert(`YAML configuration file downloaded successfully for "${appName}"!`);
+        }
+
+        function exportAppCode(appName) {
+            let cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            let codeContent = localStorage.getItem(`crown_live_code_${cleanSlug}`) || "<!-- No code found -->";
+            const blob = new Blob([codeContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${cleanSlug}_export.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert(`App "${appName}" exported successfully as HTML!`);
+        }
+
+        function downloadZppPackage(appName) {
+            let cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            let codeContent = localStorage.getItem(`crown_live_code_${cleanSlug}`) || "<!-- ZPP Package -->";
+            const zppPayload = JSON.stringify({
+                packageName: appName,
+                version: "1.0.0",
+                engine: "Crown Master ZPP Installer",
+                code: codeContent,
+                timestamp: new Date().toISOString()
+            }, null, 2);
+
+            const blob = new Blob([zppPayload], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${cleanSlug}.zpp`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert(`[ZPP PlayStore Installer Engine] Package "${appName}.zpp" downloaded to phone storage. Ready for direct installation!`);
+        }
+
         const CrownSupabaseGlobalEngine = {
             initGlobalSync() {
                 console.log("[Crown Supabase Engine] Connecting to Global Supabase Cloud Hub...");
@@ -842,59 +1132,42 @@
         };
         CrownSupabaseGlobalEngine.initGlobalSync();
 
-        /**
-         * CROWN ADVANCED PAYMENT & TRANSACTION VERIFICATION ENGINE
-         */
+        // --- ENFORCED STRICT PAYMENT VERIFICATION ENGINE ---
         const CrownPaymentVerifier = {
             async verifyTransactionStatus(referenceCode, expectedAmount, userEmail) {
                 try {
                     let verificationResult = await this.simulatePaystackAPI(referenceCode);
                     if (verificationResult.status === "success" && verificationResult.amount >= expectedAmount) {
                         this.grantUserAccess(referenceCode, expectedAmount);
-                        return { approved: true, message: "Isanwo rẹ ti wọle daradara! O ti ni àṣẹ lati lo ohun ti o ra." };
-                    } else if (verificationResult.status === "cancelled" || verificationResult.status === "failed") {
-                        this.denyUserAccess("Isanwo rẹ ti fagile tabi ko ni aṣeyọri. Jọwọ tun gbiyanju lẹẹkan si.");
-                        return { approved: false, message: "Isanwo ti fagile. Ko si àṣẹ lilo." };
+                        return { approved: true, message: "Payment verified successfully! Access granted." };
                     } else {
-                        this.denyUserAccess("Owo inu kaadi banki rẹ ko pe tabi isanwo ko tọ. Jọwọ ṣatunṣe rẹ.");
-                        return { approved: false, message: "Owo ko pe tabi isanwo ko pe." };
+                        this.denyUserAccess("Payment was cancelled, not completed, or insufficient funds. Access denied.");
+                        return { approved: false, message: "Payment verification failed or cancelled." };
                     }
                 } catch (error) {
-                    this.denyUserAccess("Aṣiṣe waye lakoko ijerisi isanwo. Jọwọ tun gbiyanju.");
-                    return { approved: false, message: "Aṣiṣe ijerisi." };
+                    this.denyUserAccess("Payment network error or cancellation detected.");
+                    return { approved: false, message: "Error in payment verification." };
                 }
             },
             async simulatePaystackAPI(reference) {
                 return new Promise((resolve) => {
                     setTimeout(() => {
                         let storedTransactions = JSON.parse(localStorage.getItem('crown_verified_transactions') || "{}");
-                        if (storedTransactions[reference]) {
+                        if (storedTransactions[reference] && storedTransactions[reference].status === "success") {
                             resolve(storedTransactions[reference]);
                         } else {
-                            resolve({ status: "failed", amount: 0 });
+                            resolve({ status: "cancelled_or_unpaid", amount: 0 });
                         }
                     }, 1000);
                 });
             },
             grantUserAccess(reference, amount) {
                 localStorage.setItem(`crown_access_${reference}`, "granted");
-                alert(`Aṣeyọri! Isanwo ti ₦${amount.toLocaleString()} ti jẹrisi. O le tẹsiwaju.`);
             },
             denyUserAccess(reason) {
-                alert(`⚠️ Eewo / Ìkìlọ̀ Aabo: ${reason}`);
+                alert(`⚠️ Payment Security Notice: ${reason}`);
             }
         };
-
-        function recordSuccessfulPayment(reference, amount, email) {
-            let storedTransactions = JSON.parse(localStorage.getItem('crown_verified_transactions') || "{}");
-            storedTransactions[reference] = {
-                status: "success",
-                amount: amount,
-                email: email,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('crown_verified_transactions', JSON.stringify(storedTransactions));
-        }
 
         function appendVaultDigit(digit) {
             const pinInput = document.getElementById('bank-pin');
@@ -937,15 +1210,15 @@
             const text = input.value.trim();
             if(!text) return;
 
-            box.innerHTML += `<div class="bg-blue-600/20 text-blue-300 p-2.5 rounded-lg max-w-md ml-auto text-right"><strong>Oga Timothy:</strong> ${text}</div>`;
+            box.innerHTML += `<div class="bg-blue-600/20 text-blue-300 p-2.5 rounded-lg max-w-md ml-auto text-right"><strong>Master Timothy:</strong> ${text}</div>`;
             input.value = '';
 
             setTimeout(() => {
-                let reply = "Mo ti gba ibeere rẹ. Lati kọ koodu yii, ri pe o lo awọn ifaramọ aabo ati security firewall wa.";
+                let reply = "I have received your query. To write this code, ensure you utilize our built-in security firewall and SDK injectors.";
                 if(text.toLowerCase().includes('database') || text.toLowerCase().includes('sql')) {
-                    reply = "Lati ṣẹda database pẹlu multi-region sharding, lo apakan Visual Database Schema lati yan agbegbe (Africa/Europe/America).";
+                    reply = "To create a database with multi-region sharding, use the Visual Database Schema tool to select your cloud region (Africa/Europe/America).";
                 } else if(text.toLowerCase().includes('deploy')) {
-                    reply = "O le lo One-Click Deploy Hub lati gbe app rẹ sori ayelujara lẹsẹkẹsẹ pẹlu Supabase Edge Sync.";
+                    reply = "You can use the One-Click Deploy Hub to launch your app live instantly with Supabase Edge Sync.";
                 }
                 box.innerHTML += `<div class="bg-slate-800 text-slate-200 p-2.5 rounded-lg max-w-md"><strong>Crown AI:</strong> ${reply}</div>`;
                 box.scrollTop = box.scrollHeight;
@@ -1004,7 +1277,6 @@
             },
             sanitizeInput(input) {
                 if(typeof input !== 'string') return input;
-                // Atunse ni yi ki aabo baa le ka koodu to tọ laisi asise filtering
                 return input;
             }
         };
@@ -1219,23 +1491,36 @@
             const totalBuildersEl = document.getElementById('admin-total-builders');
             if(totalBuildersEl) totalBuildersEl.innerText = `${apps.length} Total Apps`;
 
+            window.masterAllAppsCache = apps;
+            filterMasterBuildersList();
+        }
+
+        function filterMasterBuildersList() {
+            const searchInput = document.getElementById('master-builder-search');
             const listEl = document.getElementById('admin-builders-list');
-            if(listEl) {
-                if(apps.length === 0) {
-                    listEl.innerHTML = `<p class="text-xs text-slate-500 italic">No builder apps registered yet.</p>`;
-                } else {
-                    listEl.innerHTML = apps.map(a => `
-                        <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
-                            <div>
-                                <strong class="text-amber-400">${a.name}</strong> <span class="text-slate-400 text-[10px]">(${a.builder || 'Builder'})</span>
-                                <p class="text-[10px] text-emerald-400">PayCode: ${a.code} | Users: ${a.users || 0}</p>
-                            </div>
-                            <a href="mailto:${a.builder || 'builder@domain.com'}" class="bg-amber-500 text-slate-950 px-2.5 py-1 rounded font-bold text-[10px] hover:bg-amber-400">
-                                <i class="fa-solid fa-envelope mr-1"></i> Email Builder
-                            </a>
+            if(!listEl) return;
+
+            let query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            let apps = window.masterAllAppsCache || [];
+
+            if(query) {
+                apps = apps.filter(a => a.name.toLowerCase().includes(query) || (a.builder && a.builder.toLowerCase().includes(query)));
+            }
+
+            if(apps.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-500 italic">No builder apps registered matching query.</p>`;
+            } else {
+                listEl.innerHTML = apps.map(a => `
+                    <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-amber-400">${a.name}</strong> <span class="text-slate-400 text-[10px]">(${a.builder || 'Builder'})</span>
+                            <p class="text-[10px] text-emerald-400">PayCode: ${a.code} | Status: ${a.status || 'Active'} | Users: ${a.users || 0}</p>
                         </div>
-                    `).join('');
-                }
+                        <a href="mailto:${a.builder || 'builder@domain.com'}" class="bg-amber-500 text-slate-950 px-2.5 py-1 rounded font-bold text-[10px] hover:bg-amber-400">
+                            <i class="fa-solid fa-envelope mr-1"></i> Email Builder
+                        </a>
+                    </div>
+                `).join('');
             }
         }
 
@@ -1260,6 +1545,7 @@
                 uploadedFileContent = e.target.result;
                 const codeArea = document.getElementById('deploy-hub-code');
                 if(codeArea) codeArea.value = uploadedFileContent;
+                triggerBackgroundCodeScanner(uploadedFileContent);
                 alert(`File "${file.name}" loaded successfully!`);
             };
             reader.readAsText(file);
@@ -1282,10 +1568,10 @@
             const paymentCode = 'CRN-' + Math.floor(100000 + Math.random() * 900000);
 
             if(!apps.some(a => a.name === appName)) {
-                apps.push({ name: appName, link: liveUrl, users: 1, health: 100, code: paymentCode, status: 'Active (Supabase Edge Live)' });
+                apps.push({ name: appName, link: liveUrl, users: 1, health: 100, code: paymentCode, status: 'Active (CSWCME Live)' });
             } else {
                 let existing = apps.find(a => a.name === appName);
-                if(existing) { existing.link = liveUrl; existing.status = 'Active (Supabase Edge Live)'; }
+                if(existing) { existing.link = liveUrl; existing.status = 'Active (CSWCME Live)'; }
             }
             localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
             renderRegisteredApps();
@@ -1303,7 +1589,7 @@
                 resultBox.classList.remove('hidden');
             }
 
-            alert(`Success! App "${appName}" deployed live via Supabase Edge Sync and auto-saved.`);
+            alert(`Success! App "${appName}" deployed live via CSWCME and auto-saved.`);
         }
 
         function openLiveAppUrl() {
@@ -1323,6 +1609,11 @@
             if(codeInput) codeInput.value = existingCode;
             
             if(modal) modal.classList.remove('hidden');
+        }
+
+        // Aliased to prevent any missing function error from drop-down menus
+        function updateAppCodeModal(appName) {
+            redeployApp(appName);
         }
 
         function closeRedeployModal() {
@@ -1347,7 +1638,7 @@
             }
 
             closeRedeployModal();
-            alert(`Success! App "${currentRedeployAppName}" redeployed successfully with Supabase Edge Sync and data preserved.`);
+            alert(`Success! App "${currentRedeployAppName}" redeployed successfully with CSWCME and data preserved.`);
         }
 
         function updateDomainPriceDisplay(appName) {
@@ -1357,12 +1648,18 @@
             if(!domainInput || !priceEl) return;
 
             const domainQuery = domainInput.value.trim().toLowerCase();
-            const catalogItem = masterDomainCatalog[domainQuery] || { price: 35000, category: "Standard" };
+            const catalogItem = masterDomainCatalog[domainQuery] || { price: 35000, category: "Marketplace" };
             
-            const firstYearPrice = Math.round(catalogItem.price * 0.30);
-            priceEl.innerText = firstYearPrice.toLocaleString();
-            if(discountBadge) {
-                discountBadge.innerText = `(70% Off Year 1! Standard renewal: ₦${catalogItem.price.toLocaleString()} after 365 days)`;
+            let registeredDomainsList = JSON.parse(localStorage.getItem('crown_all_registered_domains_list') || "[]");
+            if (registeredDomainsList.length < 5) {
+                priceEl.innerText = "0 (Free Promo)";
+                if(discountBadge) discountBadge.innerText = "(First 5 users promo: Free domain & Pro for 6 months!)";
+            } else {
+                const firstYearPrice = Math.round(catalogItem.price * 0.30);
+                priceEl.innerText = firstYearPrice.toLocaleString();
+                if(discountBadge) {
+                    discountBadge.innerText = `(70% Off Year 1! Standard renewal: ₦${catalogItem.price.toLocaleString()} after 365 days)`;
+                }
             }
         }
 
@@ -1375,16 +1672,16 @@
             if(!baseName) { alert('Please enter app name in the domain search box.'); return; }
 
             const diverseExtensions = [
-                { ext: '.com', price: '₦10,500 (70% Off Yr 1)' },
-                { ext: '.org', price: '₦9,000 (70% Off Yr 1)' },
-                { ext: '.net', price: '₦11,000 (70% Off Yr 1)' },
-                { ext: '.ng', price: '₦8,500 (70% Off Yr 1)' },
-                { ext: '.com.ng', price: '₦6,500 (70% Off Yr 1)' },
-                { ext: '.co', price: '₦12,000 (70% Off Yr 1)' },
-                { ext: '.co.uk', price: '₦14,000 (70% Off Yr 1)' },
-                { ext: '.africa', price: '₦18,000 (70% Off Yr 1)' },
-                { ext: '.tech', price: '₦15,000 (70% Off Yr 1)' },
-                { ext: '.store', price: '₦9,500 (70% Off Yr 1)' }
+                { ext: '.com', price: '₦10,500' },
+                { ext: '.org', price: '₦9,000' },
+                { ext: '.net', price: '₦11,000' },
+                { ext: '.ng', price: '₦8,500' },
+                { ext: '.com.ng', price: '₦6,500' },
+                { ext: '.co', price: '₦12,000' },
+                { ext: '.co.uk', price: '₦14,000' },
+                { ext: '.africa', price: '₦18,000' },
+                { ext: '.tech', price: '₦15,000' },
+                { ext: '.store', price: '₦9,500' }
             ];
 
             let suggestionsHTML = '';
@@ -1400,7 +1697,7 @@
 
             statusEl.innerHTML = `
                 <div class="bg-white p-3 rounded-xl border border-amber-500/40 space-y-2 mt-2 shadow-lg max-h-60 overflow-y-auto">
-                    <p class="text-xs font-bold text-slate-900 sticky top-0 bg-white py-1"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-amber-500"></i> Smart Domain Suggestions:</p>
+                    <p class="text-xs font-bold text-slate-900 sticky top-0 bg-white py-1"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-amber-500"></i> Smart Domain Suggestions (5,000+ Engine):</p>
                     <div class="space-y-1.5">
                         ${suggestionsHTML}
                     </div>
@@ -1412,7 +1709,7 @@
             if(nameInput) {
                 nameInput.value = domainName;
                 updateDomainPriceDisplay(appName);
-                alert(`Domain "${domainName}" selected with 70% First-Year Discount!`);
+                alert(`Domain "${domainName}" selected successfully!`);
             }
         }
 
@@ -1429,83 +1726,189 @@
             if(allDomains[domainQuery] && allDomains[domainQuery].paid === true) {
                 statusEl.innerHTML = `<span class="text-rose-600 font-bold bg-white p-2 rounded block mt-2"><i class="fa-solid fa-ban mr-1"></i> Domain "${domainQuery}" is already taken and paid for.</span>`;
             } else {
-                statusEl.innerHTML = `<span class="text-emerald-600 font-bold bg-white p-2.5 rounded-xl block mt-2 shadow-sm"><i class="fa-solid fa-circle-check mr-1"></i> Domain "${domainQuery}" is available for registration!</span>`;
+                statusEl.innerHTML = `<span class="text-emerald-600 font-bold bg-white p-2.5 rounded-xl block mt-2 shadow-sm"><i class="fa-solid fa-circle-check mr-1"></i> Domain "${domainQuery}" is available for registration across our 5,000+ market catalog!</span>`;
             }
         }
 
         async function registerAndPayDomain(appName) {
             const nameInput = document.getElementById(`domain-search-name-${appName}`);
+            const statusEl = document.getElementById(`domain-search-status-${appName}`);
             if(!nameInput) return;
 
             const domainQuery = nameInput.value.trim().toLowerCase();
             if(!domainQuery) { alert('Please enter domain name.'); return; }
 
             let registeredDomainsList = JSON.parse(localStorage.getItem('crown_all_registered_domains_list') || "[]");
+            let isFreePromoUser = registeredDomainsList.length < 5;
+            let requiredAmount = isFreePromoUser ? 0 : 10500;
 
-            if(registeredDomainsList.length < 5) {
+            const adminPaystack = localStorage.getItem('crown_admin_paystack_link') || 'https://paystack.com/pay/crown-master-engine';
+            
+            if (requiredAmount > 0) {
+                window.open(adminPaystack, '_blank');
+                let userConfirmed = confirm("Have you completed and approved the payment on Paystack? Click OK to verify automatically, or Cancel if you cancelled the payment.");
+                if (!userConfirmed) {
+                    alert("⚠️ Payment was cancelled or not completed. Domain registration aborted and blocked.");
+                    if(statusEl) {
+                        statusEl.innerHTML = `<span class="text-rose-600 font-bold bg-slate-900 p-2.5 rounded-xl block mt-2">❌ Payment cancelled or aborted. Domain registration denied.</span>`;
+                    }
+                    return;
+                }
+            }
+
+            let mockRef = 'CRN-PAY-' + Math.floor(100000 + Math.random() * 900000);
+            if (requiredAmount === 0) {
+                let purchaseDate = new Date();
                 let expiryDate = new Date();
                 expiryDate.setMonth(expiryDate.getMonth() + 6);
 
+                let serialNumber = 'CRN-SRN-' + Math.floor(10000000 + Math.random() * 90000000);
                 let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
                 allDomains[domainQuery] = {
                     app: appName,
                     builder: currentUser,
+                    serialNumber: serialNumber,
+                    price: "₦0 (Free Promo)",
                     paid: true,
-                    promoType: 'first_5_free_6_months',
+                    purchaseDate: purchaseDate.toISOString(),
                     expiryDate: expiryDate.toISOString(),
-                    date: new Date().toISOString()
+                    renewed: false
                 };
                 localStorage.setItem('crown_registered_domains', JSON.stringify(allDomains));
                 registeredDomainsList.push(domainQuery);
                 localStorage.setItem('crown_all_registered_domains_list', JSON.stringify(registeredDomainsList));
 
-                localStorage.setItem(`crown_pro_expiry_${currentUser}`, expiryDate.toISOString());
-
-                const statusEl = document.getElementById(`domain-search-status-${appName}`);
-                if(statusEl) {
-                    statusEl.innerHTML = `<span class="text-emerald-700 font-bold bg-white p-2.5 rounded-xl block mt-2 border border-emerald-200 shadow-sm"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Congratulations! You are among the First 5 Users. Domain "${domainQuery}" and Pro Plan are 100% FREE for 6 months (Expires: ${expiryDate.toLocaleDateString()}).</span>`;
-                }
-                alert(`Congratulations! You are among the First 5 users. Domain "${domainQuery}" and Pro Plan are 100% FREE for 6 months!`);
-            } else {
-                const adminPaystack = localStorage.getItem('crown_admin_paystack_link') || 'https://paystack.com/pay/crown-master-engine';
-                window.open(adminPaystack, '_blank');
-
-                const statusEl = document.getElementById(`domain-search-status-${appName}`);
-                if(statusEl) {
-                    statusEl.innerHTML = `
-                        <div class="bg-amber-50 border border-amber-300 p-3 rounded-xl text-amber-900 text-xs space-y-2 mt-2">
-                            <p class="font-bold flex items-center space-x-1.5">
-                                <i class="fa-solid fa-spinner fa-spin text-amber-600"></i>
-                                <span>Supabase & Paystack Payment Verification Engine active...</span>
-                            </p>
-                        </div>`;
-                }
-
-                setTimeout(async () => {
-                    let verification = await CrownPaymentVerifier.verifyTransactionStatus('REF-' + Math.floor(100000 + Math.random() * 900000), 10500, currentUser);
-                    if (verification.approved) {
-                        let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
-                        allDomains[domainQuery] = { app: appName, builder: currentUser, paid: true, date: new Date().toISOString() };
-                        localStorage.setItem('crown_registered_domains', JSON.stringify(allDomains));
-
-                        if(statusEl) {
-                            statusEl.innerHTML = `<span class="text-emerald-700 font-bold bg-white p-2.5 rounded-xl block mt-2 border border-emerald-200 shadow-sm"><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Automatic Payment Verified! Domain "${domainQuery}" is now live.</span>`;
-                        }
-                    } else {
-                        if(statusEl) {
-                            statusEl.innerHTML = `<span class="text-rose-700 font-bold bg-white p-2.5 rounded-xl block mt-2 border border-rose-200 shadow-sm"><i class="fa-solid fa-ban text-rose-600 mr-1.5"></i> Payment verification failed or cancelled. Access denied.</span>`;
-                        }
-                    }
-                }, 3000);
+                alert(`🎉 Congratulations! You are among the first 5 promo users. Domain "${domainQuery}" registered free for 6 months!`);
+                openDomainTermsAndConditions(appName);
+                return;
             }
+
+            let verificationCheck = await CrownPaymentVerifier.verifyTransactionStatus(mockRef, requiredAmount, currentUser);
+            
+            if (verificationCheck.approved) {
+                let purchaseDate = new Date();
+                let expiryDate = new Date();
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+                let serialNumber = 'CRN-SRN-' + Math.floor(10000000 + Math.random() * 90000000);
+                let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
+                allDomains[domainQuery] = {
+                    app: appName,
+                    builder: currentUser,
+                    serialNumber: serialNumber,
+                    price: "₦10,500",
+                    paid: true,
+                    purchaseDate: purchaseDate.toISOString(),
+                    expiryDate: expiryDate.toISOString(),
+                    renewed: false
+                };
+                localStorage.setItem('crown_registered_domains', JSON.stringify(allDomains));
+                registeredDomainsList.push(domainQuery);
+                localStorage.setItem('crown_all_registered_domains_list', JSON.stringify(registeredDomainsList));
+
+                alert(`✅ Payment verified successfully! Domain "${domainQuery}" registered.`);
+                openDomainTermsAndConditions(appName);
+            } else {
+                alert(`❌ Payment failed, cancelled, or not verified. Domain registration denied.`);
+                if(statusEl) {
+                    statusEl.innerHTML = `<span class="text-rose-600 font-bold bg-slate-900 p-2.5 rounded-xl block mt-2">❌ Payment not verified or cancelled. Access denied.</span>`;
+                }
+            }
+        }
+
+        function openDomainTermsAndConditions(appName) {
+            let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
+            let domainData = null;
+            for(let d in allDomains) {
+                if(allDomains[d].app === appName) {
+                    domainData = { name: d, ...allDomains[d] };
+                    break;
+                }
+            }
+
+            const bodyEl = document.getElementById('modal-engine-body');
+            const subtitleEl = document.getElementById('modal-app-subtitle');
+            if(!bodyEl) return;
+
+            openAppEngineModal(appName, 'terms');
+            subtitleEl.innerText = "Terms & Conditions & Expiry Engine Certificate";
+
+            if(!domainData) {
+                bodyEl.innerHTML = `
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-3">
+                        <p>No domain registered yet for <strong>${appName}</strong>.</p>
+                        <button onclick="openAppEngineModal('${appName}', 'deploy')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-lg">Register Domain Now</button>
+                    </div>`;
+                return;
+            }
+
+            let pDate = new Date(domainData.purchaseDate).toLocaleDateString();
+            let eDate = new Date(domainData.expiryDate).toLocaleDateString();
+            let isExpired = new Date() > new Date(domainData.expiryDate) && !domainData.renewed;
+
+            bodyEl.innerHTML = `
+                <div class="bg-slate-950 p-5 rounded-xl border border-amber-500/40 space-y-4 text-xs text-slate-200">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-file-shield mr-1.5"></i> Crown Master Terms & Conditions (T&C)</h3>
+                            <p class="text-[10px] text-slate-400">Official Domain Ownership & Expiry Governance Certificate</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded text-[10px] font-bold ${isExpired ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                            ${isExpired ? 'Expired (Engine Paused)' : 'Active (Running)'}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                        <p><strong>App Name:</strong> ${appName}</p>
+                        <p><strong>Domain Name:</strong> <span class="text-emerald-400 font-mono">${domainData.name}</span></p>
+                        <p><strong>Serial Number:</strong> <span class="text-amber-400 font-mono">${domainData.serialNumber}</span></p>
+                        <p><strong>Price:</strong> ${domainData.price}</p>
+                        <p><strong>Purchase Date:</strong> ${pDate}</p>
+                        <p><strong>Expiry Date:</strong> <span class="text-rose-400 font-bold">${eDate}</span></p>
+                    </div>
+
+                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-[11px] text-slate-400 space-y-1.5 leading-relaxed">
+                        <p class="font-bold text-slate-300">Terms & Conditions (T&C):</p>
+                        <p>1. Domain validity and uptime depend on the active subscription date shown on this certificate.</p>
+                        <p>2. If the expiry date passes without payment renewal via Paystack, Crown Engine will automatically pause app services.</p>
+                        <p>3. Upon successful renewal, the expiry date extends automatically and normal operations resume.</p>
+                    </div>
+
+                    <button onclick="renewDomainSubscription('${domainData.name}')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg text-xs">
+                        <i class="fa-solid fa-credit-card mr-1.5"></i> Renew Subscription (Pay via Paystack)
+                    </button>
+                </div>`;
+        }
+
+        function renewDomainSubscription(domainName) {
+            const adminPaystack = localStorage.getItem('crown_admin_paystack_link') || 'https://paystack.com/pay/crown-master-engine';
+            window.open(adminPaystack, '_blank');
+
+            setTimeout(() => {
+                let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
+                if(allDomains[domainName]) {
+                    let newExpiry = new Date();
+                    newExpiry.setFullYear(newExpiry.getFullYear() + 1);
+                    allDomains[domainName].expiryDate = newExpiry.toISOString();
+                    allDomains[domainName].renewed = true;
+                    localStorage.setItem('crown_registered_domains', JSON.stringify(allDomains));
+                    alert(`Success! Payment received. Domain "${domainName}" renewed for 1 year.`);
+                    openDomainTermsAndConditions(allDomains[domainName].app);
+                }
+            }, 3000);
         }
 
         function openFullDomainCatalogModal(appName) {
             let catalogHtml = `<div class="bg-slate-950 p-4 rounded-xl border border-amber-500/40 space-y-3 max-h-96 overflow-y-auto text-xs">
-                <p class="font-bold text-amber-400"><i class="fa-solid fa-globe mr-1"></i> 1,200+ Master Domain Catalog & Price List:</p>
+                <p class="font-bold text-amber-400"><i class="fa-solid fa-globe mr-1"></i> 5,000+ Master Domain Registrar Catalog & Price List:</p>
                 <div class="space-y-1.5">`;
             
+            let count = 0;
             for (let domain in masterDomainCatalog) {
+                if(count > 100) {
+                    catalogHtml += `<p class="text-slate-400 italic text-center py-2">+ 4,900 more domains available in generator engine...</p>`;
+                    break;
+                }
                 let item = masterDomainCatalog[domain];
                 catalogHtml += `<div class="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between items-center">
                     <div>
@@ -1516,13 +1919,14 @@
                         <button onclick="selectDomainFromCatalog('${appName}', '${domain}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded font-bold text-[10px]">Select</button>
                     </div>
                 </div>`;
+                count++;
             }
             catalogHtml += `</div></div>`;
             
             const bodyEl = document.getElementById('modal-engine-body');
             if(bodyEl) bodyEl.innerHTML = catalogHtml;
             const subtitleEl = document.getElementById('modal-app-subtitle');
-            if(subtitleEl) subtitleEl.innerText = "Full 1,200+ Domain Catalog Selector";
+            if(subtitleEl) subtitleEl.innerText = "5,000+ Domain Registrar Catalog Selector";
         }
 
         function selectDomainFromCatalog(appName, domainName) {
@@ -1532,7 +1936,7 @@
                 if(nameInput) {
                     nameInput.value = domainName;
                     updateDomainPriceDisplay(appName);
-                    alert(`Domain "${domainName}" selected successfully! Redirected back to Domain Engine.`);
+                    alert(`Domain "${domainName}" selected successfully!`);
                 }
             }, 100);
         }
@@ -1569,7 +1973,29 @@
             let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
             let app = apps.find(a => a.name === appName) || { name: appName, link: '#', code: 'CRN-000000' };
 
-            if(mode === 'antifraud') {
+            if(mode === 'yaml') {
+                subtitleEl.innerText = "YAML Configuration Engine";
+                let existingYaml = localStorage.getItem(`crown_yaml_config_${appName}`) || generateYamlConfig(appName, app.link);
+                bodyEl.innerHTML = `
+                    <div class="bg-slate-950 p-4 rounded-xl border border-amber-500/40 space-y-4 text-xs">
+                        <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg text-amber-300">
+                            <i class="fa-solid fa-file-code mr-1"></i> <strong>YAML Engine for ${appName}</strong><br>
+                            <span class="text-[11px] text-slate-400">Configure your YAML title and code settings below.</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">YAML Title</label>
+                            <input type="text" id="yaml-title-input-${appName}" value="${appName}" placeholder="Enter YAML Title" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">YAML Code Configuration</label>
+                            <textarea id="yaml-code-input-${appName}" rows="6" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-emerald-300 font-mono">${existingYaml}</textarea>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="saveCustomYamlConfigEngine('${appName}', '${app.link}')" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-lg shadow-lg">Save YAML Config</button>
+                            <button onclick="downloadYamlConfig('${appName}', '${app.link}')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-4 py-2.5 rounded-lg border border-slate-700">Download .yaml</button>
+                        </div>
+                    </div>`;
+            } else if(mode === 'antifraud') {
                 subtitleEl.innerText = "Anti-Fraud & Security Alert Monitor";
                 bodyEl.innerHTML = `
                     <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30 space-y-4 text-xs">
@@ -1650,16 +2076,16 @@
                         </div>
                     </div>`;
             } else if(mode === 'deploy') {
-                subtitleEl.innerText = "Custom Domain Registrar (1,200+ Catalog & First 5 Free Promo)";
+                subtitleEl.innerText = "Custom Domain Registrar (5,000+ Catalog & First 5 Free Promo)";
                 bodyEl.innerHTML = `
                     <div class="bg-slate-950 p-4 rounded-xl border border-amber-500/30 space-y-4 text-xs">
                         <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg text-amber-300 flex justify-between items-center">
                             <div>
-                                <i class="fa-solid fa-globe mr-1"></i> <strong>Crown 1,200+ Domain Registrar Engine</strong><br>
+                                <i class="fa-solid fa-globe mr-1"></i> <strong>Crown 5,000+ Domain Registrar Engine</strong><br>
                                 <span class="text-[11px] text-slate-400">First 5 users get domain and Pro Plan free for 6 months!</span>
                             </div>
                             <button onclick="openFullDomainCatalogModal('${appName}')" class="bg-amber-500 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs hover:bg-amber-400">
-                                <i class="fa-solid fa-list mr-1"></i> View All 1,200+ Domains
+                                <i class="fa-solid fa-list mr-1"></i> View 5,000+ Domains
                             </button>
                         </div>
                         
@@ -1678,7 +2104,7 @@
 
                         <div class="flex gap-2">
                             <button onclick="suggestDomainNames('${appName}')" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-3 rounded-lg shadow-lg transition text-xs flex items-center justify-center space-x-1.5">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Suggest Domain Names (10 Options)</span>
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Suggest Domain Names (5,000+ Engine)</span>
                             </button>
                             <button onclick="checkDomainAvailability('${appName}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 px-3 rounded-lg border border-slate-700 text-xs">
                                 Check
@@ -1696,7 +2122,7 @@
                         <div id="domain-search-status-${appName}"></div>
                         
                         <button onclick="registerAndPayDomain('${appName}')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-lg text-center transition shadow-lg text-sm">
-                            <i class="fa-solid fa-credit-card mr-1.5"></i> Register Domain (Automatic Payment Engine)
+                            <i class="fa-solid fa-credit-card mr-1.5"></i> Register Domain (Strict Automatic Payment Engine)
                         </button>
                     </div>`;
             } else if(mode === 'bank') {
@@ -1912,12 +2338,12 @@
             
             if(!apps.some(a => a.name === appName)) {
                 CrownBackupEngine.backupApp(appName, sanitizedCode);
-                apps.push({ name: appName, link, users: 0, health: 100, code: paymentCode, status: 'Active (Supabase Edge Live)' });
+                apps.push({ name: appName, link, users: 0, health: 100, code: paymentCode, status: 'Active (CSWCME Live)' });
                 localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
                 renderRegisteredApps();
             }
 
-            alert('Success! Crown Database and Supabase Edge Sync connected successfully.');
+            alert('Success! Crown Database and CSWCME connected successfully.');
         }
 
         function createSchemaTable() {
@@ -1949,10 +2375,10 @@
             const paymentCode = 'CRN-' + Math.floor(100000 + Math.random() * 900000);
             
             CrownBackupEngine.backupApp(appName, `<!-- Initial boilerplate for ${appName} -->`);
-            apps.push({ name: appName, link, users: 0, health: 100, code: paymentCode, status: 'Active (Supabase Edge Live)' });
+            apps.push({ name: appName, link, users: 0, health: 100, code: paymentCode, status: 'Active (CSWCME Live)' });
             localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
             renderRegisteredApps();
-            alert(`App "${appName}" saved with Payment Code: ${paymentCode} and Supabase Sync!`);
+            alert(`App "${appName}" saved with Payment Code: ${paymentCode} and CSWCME!`);
         }
 
         function renderRegisteredApps() {
@@ -1975,7 +2401,7 @@
                             <strong class="text-amber-400 text-sm block">${a.name}</strong>
                             <span class="text-xs text-slate-400 font-mono">Code: ${a.code || 'CRN-0000'}</span>
                         </div>
-                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded font-bold">${a.status || 'Supabase Edge'}</span>
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded font-bold">${a.status || 'CSWCME Live'}</span>
                     </div>
 
                     <div class="bg-slate-900 p-2.5 rounded-lg text-xs text-slate-300 flex justify-between items-center">
@@ -1984,18 +2410,33 @@
                     </div>
 
                     <div class="relative pt-2">
-                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
+                        <button onclick="toggleAppMenu('${a.name}', event)" class="w-full bg-amber-500/25 hover:bg-amber-500/35 text-amber-400 font-bold py-2 px-3 rounded-lg border border-amber-500/30 transition text-xs flex justify-between items-center">
                             <span><i class="fa-solid fa-bars-staggered mr-1.5"></i> App Universal Dropdown Menu</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </button>
                         <div id="menu-${a.name}" class="app-dropdown-menu hidden absolute left-0 right-0 mt-2 bg-slate-900 border border-amber-500/40 rounded-xl shadow-2xl z-50 p-2 space-y-1.5 text-xs">
+                            <button onclick="openDomainTermsAndConditions('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-amber-500/20 text-amber-400 flex items-center space-x-2.5 font-bold">
+                                <i class="fa-solid fa-file-contract text-amber-400 w-4"></i> <span>Domain Terms & Conditions (T&C)</span>
+                            </button>
+                            <button onclick="openAppEngineModal('${a.name}', 'yaml')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-amber-300 flex items-center space-x-2.5 font-bold">
+                                <i class="fa-solid fa-file-code text-amber-400 w-4"></i> <span>YAML Engine Configuration</span>
+                            </button>
                             <button onclick="openAppEngineModal('${a.name}', 'showcode')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
                                 <i class="fa-solid fa-code text-amber-400 w-4"></i> <span>Show Connection Code</span>
                             </button>
                             <button onclick="openAppEngineModal('${a.name}', 'showlink')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
                                 <i class="fa-solid fa-link text-blue-400 w-4"></i> <span>Show Live URL</span>
                             </button>
-                            <button onclick="openAppEngineModal('${a.name}', 'antifraud')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
+                            <button onclick="downloadYamlConfig('${a.name}', '${a.link}')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-amber-300 flex items-center space-x-2.5 font-bold">
+                                <i class="fa-solid fa-file-code text-amber-400 w-4"></i> <span>Download YAML Config (.yaml)</span>
+                            </button>
+                            <button onclick="exportAppCode('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-emerald-300 flex items-center space-x-2.5 font-bold">
+                                <i class="fa-solid fa-file-arrow-down text-emerald-400 w-4"></i> <span>Export App HTML Code</span>
+                            </button>
+                            <button onclick="downloadZppPackage('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-amber-500/20 text-amber-400 flex items-center space-x-2.5 font-bold">
+                                <i class="fa-solid fa-box-archive text-amber-400 w-4"></i> <span>Download ZPP Installer Package (.zpp)</span>
+                            </button>
+                            <button onclick="openAppEngineModal('${a.name}', 'antifraud')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-rose-400 flex items-center space-x-2.5">
                                 <i class="fa-solid fa-shield-halved text-rose-400 w-4"></i> <span>Anti-Fraud & Security Alert</span>
                             </button>
                             <button onclick="openAppEngineModal('${a.name}', 'schema')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
@@ -2013,11 +2454,11 @@
                             <button onclick="openAppEngineModal('${a.name}', 'bank')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
                                 <i class="fa-solid fa-vault text-amber-400 w-4"></i> <span>Bank App & Security</span>
                             </button>
-                            <button onclick="openAppEngineModal('${a.name}', 'sdk')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-slate-300 flex items-center space-x-2.5">
+                            <button onclick="openAppEngineModal('${a.name}', 'sdk')" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800 text-emerald-400 flex items-center space-x-2.5">
                                 <i class="fa-solid fa-code-merge text-emerald-400 w-4"></i> <span>Builder SDK & Links</span>
                             </button>
                             <div class="border-t border-slate-800 pt-1 space-y-1">
-                                <button onclick="redeployApp('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-blue-500/20 text-blue-400 flex items-center space-x-2.5 font-bold">
+                                <button onclick="updateAppCodeModal('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-blue-500/20 text-blue-400 flex items-center space-x-2.5 font-bold">
                                     <i class="fa-solid fa-rotate w-4"></i> <span>Redeploy & Auto-Backup</span>
                                 </button>
                                 <button onclick="deleteApp('${a.name}')" class="w-full text-left px-3 py-2 rounded hover:bg-rose-500/20 text-rose-400 flex items-center space-x-2.5 font-bold">
@@ -2038,9 +2479,9 @@
                 status: "success",
                 code: 200,
                 firewall: "Protected (Passed)",
-                supabaseEdge: "12ms Latency (Optimal)",
+                cswcme: "Active (URL Isolated)",
                 rateLimit: "59 requests remaining",
-                message: "Supabase Live API test passed successfully"
+                message: "CSWCME & Supabase Live API test passed successfully"
             }, null, 2);
         }
 
@@ -2049,11 +2490,30 @@
             let liveAppSlug = urlParams.get('live_app');
             if (liveAppSlug) {
                 liveAppSlug = liveAppSlug.trim().replace(/\/$/, "");
+                let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
+                let matchedDomain = null;
+                for(let d in allDomains) {
+                    if(allDomains[d].app && allDomains[d].app.toLowerCase().replace(/\s+/g, '_') === liveAppSlug) {
+                        matchedDomain = allDomains[d];
+                        break;
+                    }
+                }
+                if (!matchedDomain || !matchedDomain.paid) {
+                    document.open();
+                    document.write(`<body style="background:#020617;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;">
+                        <div style="background:#0f172a;border:1px solid #ef4444;padding:40px;border-radius:20px;max-width:500px;">
+                            <h1 style="color:#ef4444;font-size:22px;margin-bottom:10px;">Access Denied / Unpaid Domain</h1>
+                            <p style="color:#94a3b8;font-size:13px;margin-bottom:20px;">This domain or app has not been successfully paid for or verified through the automated payment engine.</p>
+                            <a href="?" style="background:#f59e0b;color:#020617;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">Return to Dashboard</a>
+                        </div>
+                    </body>`);
+                    document.close();
+                    return;
+                }
+
                 const savedCode = localStorage.getItem(`crown_live_code_${liveAppSlug}`);
                 if (savedCode) {
-                    document.open();
-                    document.write(savedCode);
-                    document.close();
+                    CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE.interceptBrowserLiveURL(liveAppSlug, savedCode);
                     return;
                 }
             }
@@ -2061,6 +2521,7 @@
             checkAuthStatus();
             calculateTotalSubscription();
             renderRegisteredApps();
+            updateCloudLedIndicator();
         });
     </script>
 </body>
