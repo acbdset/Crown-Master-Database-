@@ -1,0 +1,29 @@
+# Crown Master Database - Render Deployment & Master Configuration
+services:
+  - type: web
+    name: crown-master-database
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: ./
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# Crown Master App Engine Specifications
+app_metadata:
+  name: "Crown Master Database"
+  version: "1.0.0"
+  primary_region: "Africa-Lagos-Node-01"
+  features:
+    supabase_global_sync: true
+    domain_registrar_catalog: 5000
+    first_5_free_promo: true
+    strict_payment_verification: true
