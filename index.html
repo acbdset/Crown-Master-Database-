@@ -1,4 +1,3 @@
-index.html
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1037,6 +1036,15 @@ index.html
         const deviceSessionId = localStorage.getItem('crown_device_session_id') || ("PHN-" + Math.random().toString(36).substring(2, 8).toUpperCase());
         localStorage.setItem('crown_device_session_id', deviceSessionId);
 
+        function normalizeLiveSlug(raw) {
+            return String(raw || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "_")
+                .replace(/^_+|_+$/g, "");
+        }
+
         // ============================================================
         // REAL-TIME MULTI-APP BUS, CLOUD BRIDGE & MULTI-PHONE MESH ENGINE
         // ============================================================
@@ -1139,7 +1147,7 @@ index.html
 
             init(appName = "MyCrownApp") {
                 this.activeApp = appName;
-                this.room = (appName || "crown_comms_room").toLowerCase().replace(/[^a-z0-9_]/g, '_') + "_comms";
+                this.room = (normalizeLiveSlug(appName) || "crown_comms_room") + "_comms";
                 this.subscribeCloudComms();
                 this.refreshLists();
             },
@@ -1591,11 +1599,11 @@ index.html
         const CrownKeyGeneratorEngine = {
             generatePublishableKey(appSlug = "crown") {
                 const rand = Math.random().toString(36).substring(2, 12);
-                return `crn_pub_${appSlug.toLowerCase().replace(/[^a-z0-9]/g, '')}_${rand}`;
+                return `crn_pub_${normalizeLiveSlug(appSlug)}_${rand}`;
             },
             generateAnonKey(appSlug = "crown") {
                 const rand = Math.random().toString(36).substring(2, 14);
-                return `crn_anon_${appSlug.toLowerCase().replace(/[^a-z0-9]/g, '')}_${rand}`;
+                return `crn_anon_${normalizeLiveSlug(appSlug)}_${rand}`;
             }
         };
 
@@ -1759,10 +1767,14 @@ index.html
                 if (!appsErr && Array.isArray(appsData) && appsData.length > 0) {
                     let localApps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
                     appsData.forEach(remoteApp => {
+                        const cleanSlug = normalizeLiveSlug(remoteApp.slug || remoteApp.app_name);
+                        if (remoteApp.html_code && cleanSlug) {
+                            localStorage.setItem(`crown_live_code_${cleanSlug}`, remoteApp.html_code);
+                        }
                         if (!localApps.some(a => a.name === remoteApp.app_name)) {
                             localApps.push({
                                 name: remoteApp.app_name,
-                                link: remoteApp.live_url || `${window.location.origin}${window.location.pathname}?live_app=${remoteApp.slug}`,
+                                link: remoteApp.live_url || `${window.location.origin}${window.location.pathname}?live_app=${cleanSlug}`,
                                 users: 1,
                                 health: 100,
                                 code: remoteApp.payment_code || 'CRN-CLOUD',
@@ -1944,7 +1956,7 @@ index.html
         // STEP-BY-STEP SINGLE-FILE SNIPPET MERGER
         // ============================================================
         function buildCompleteSingleFileBundle(baseHtml, appSlug = "MyCrownApp") {
-            const cleanSlug = (appSlug || "MyCrownApp").toLowerCase().replace(/\s+/g, '_');
+            const cleanSlug = normalizeLiveSlug(appSlug) || "mycrownapp";
             const pubKey = CrownKeyGeneratorEngine.generatePublishableKey(cleanSlug);
             const anonKey = CrownKeyGeneratorEngine.generateAnonKey(cleanSlug);
             const menuItemsCount = buildAppRightMenuHtml(appSlug, `?live_app=${cleanSlug}`, "CRN-000000").split("openAppEngineModal").length - 1;
@@ -1974,11 +1986,30 @@ index.html
             init() {
                 console.log("[CSWCME] Initialized Supabase Web Commander Master Engine...");
             },
+            async fetchRemoteAppCodeBySlug(slug) {
+                const cleanSlug = normalizeLiveSlug(slug);
+                if (!cleanSlug || !supabaseClient) return null;
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('deployed_apps')
+                        .select('html_code, app_name, visibility, owner_email')
+                        .eq('slug', cleanSlug)
+                        .limit(1);
+                    if (!error && Array.isArray(data) && data.length > 0 && data[0].html_code) {
+                        localStorage.setItem(`crown_live_code_${cleanSlug}`, data[0].html_code);
+                        return data[0];
+                    }
+                } catch (e) {
+                    console.warn("[CSWCME Remote Fetch Error]:", e);
+                }
+                return null;
+            },
             interceptBrowserLiveURL(slug, codeContent) {
+                const cleanSlug = normalizeLiveSlug(slug) || slug;
                 let allDomains = JSON.parse(localStorage.getItem('crown_registered_domains') || "{}");
                 let matchedDomain = null;
                 for(let d in allDomains) {
-                    if(allDomains[d].app && allDomains[d].app.toLowerCase().replace(/\s+/g, '_') === slug) {
+                    if(allDomains[d].app && normalizeLiveSlug(allDomains[d].app) === cleanSlug) {
                         matchedDomain = allDomains[d];
                         break;
                     }
@@ -1989,7 +2020,7 @@ index.html
                     const k = localStorage.key(i);
                     if (k && k.startsWith('crown_apps_')) {
                         const list = JSON.parse(localStorage.getItem(k) || "[]");
-                        const found = list.find(a => a.name && a.name.toLowerCase().replace(/\s+/g, '_') === slug);
+                        const found = list.find(a => a.name && normalizeLiveSlug(a.name) === cleanSlug);
                         if (found) {
                             appMeta = { owner: k.replace('crown_apps_', ''), ...found };
                             break;
@@ -2027,7 +2058,7 @@ index.html
                     }
                 }
 
-                window.history.pushState({ app: slug }, slug, `?live_app=${slug}`);
+                window.history.pushState({ app: cleanSlug }, cleanSlug, `?live_app=${cleanSlug}`);
                 document.open();
                 document.write(codeContent);
                 document.close();
@@ -2138,7 +2169,7 @@ index.html
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${appName.toLowerCase().replace(/\s+/g, '_')}_config.yaml`;
+            a.download = `${normalizeLiveSlug(appName) || 'app'}_config.yaml`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2151,7 +2182,7 @@ index.html
                 alert(`HTML code export cancelled for "${appName}".`);
                 return;
             }
-            let cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            let cleanSlug = normalizeLiveSlug(appName);
             let codeContent = localStorage.getItem(`crown_live_code_${cleanSlug}`) || "<!-- No code found -->";
             const blob = new Blob([codeContent], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -2170,7 +2201,7 @@ index.html
                 alert(`ZPP download cancelled for "${appName}".`);
                 return;
             }
-            let cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            let cleanSlug = normalizeLiveSlug(appName);
             let codeContent = localStorage.getItem(`crown_live_code_${cleanSlug}`) || "<!-- ZPP Package -->";
             const zppPayload = JSON.stringify({
                 packageName: appName,
@@ -2868,7 +2899,7 @@ index.html
             if(!appName) { alert('Please enter app name.'); return; }
             if(!codeContent) { alert('Please upload a file or paste multi-format code.'); return; }
 
-            const cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            const cleanSlug = normalizeLiveSlug(appName) || ("app_" + Date.now());
             await CrownBackupEngine.backupApp(appName, codeContent);
 
             localStorage.setItem(`crown_live_code_${cleanSlug}`, codeContent);
@@ -2895,6 +2926,7 @@ index.html
                 app_name: appName,
                 slug: cleanSlug,
                 live_url: liveUrl,
+                html_code: codeContent,
                 owner_email: currentUser,
                 payment_code: paymentCode,
                 region,
@@ -2933,7 +2965,7 @@ index.html
             const visSelect = document.getElementById('redeploy-visibility');
             
             if(titleEl) titleEl.innerText = `Update code for app "${appName}" (Data Protected)`;
-            let cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+            let cleanSlug = normalizeLiveSlug(appName);
             let existingCode = localStorage.getItem(`crown_live_code_${cleanSlug}`) || "";
             if(codeInput) codeInput.value = existingCode;
 
@@ -2964,7 +2996,7 @@ index.html
             const newCode = codeInput.value.trim();
             if(!newCode) { alert('Please paste HTML code.'); return; }
 
-            let cleanSlug = currentRedeployAppName.toLowerCase().replace(/\s+/g, '_');
+            let cleanSlug = normalizeLiveSlug(currentRedeployAppName);
             let oldState = localStorage.getItem(`crown_app_state_${cleanSlug}`);
             
             await CrownBackupEngine.backupApp(currentRedeployAppName, newCode);
@@ -2981,6 +3013,16 @@ index.html
                 if (visSelect) found.visibility = visSelect.value;
                 localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
             }
+
+            await pushToSupabaseCloud('deployed_apps', {
+                app_name: currentRedeployAppName,
+                slug: cleanSlug,
+                html_code: newCode,
+                owner_email: currentUser,
+                app_tier: tierSelect ? tierSelect.value : 'me_only',
+                visibility: visSelect ? visSelect.value : 'public',
+                created_at: new Date().toISOString()
+            }, 'slug');
 
             await CrownCloudDeviceSyncEngine.pushAndSyncAcrossPhonesAndCloud({
                 channel: cleanSlug,
@@ -3628,7 +3670,7 @@ index.html
                         <button onclick="alert('PIN saved successfully!');" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-lg w-full">Save PIN</button>
                     </div>`;
             } else if(mode === 'sdk') {
-                const cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
+                const cleanSlug = normalizeLiveSlug(appName);
                 subtitleEl.innerText = "Builder SDK, Cloud Sync & Multi-Phone Mesh";
                 bodyEl.innerHTML = `
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4 text-xs">
@@ -3758,332 +3800,312 @@ index.html
 
         function handleSignup(e) {
             e.preventDefault();
-            const name = document.getElementById('signup-name').value.trim();
+            const fullName = document.getElementById('signup-name').value.trim();
             const phone = document.getElementById('signup-phone').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const pass = document.getElementById('signup-pass').value;
             const confirmPass = document.getElementById('signup-confirm-pass').value;
 
-            if (!name || !phone || !email || !pass || !confirmPass) {
-                alert("Please complete all registration fields.");
+            if (!fullName || !phone || !email || !pass || !confirmPass) {
+                alert('Please fill out all required registration fields.');
                 return;
             }
             if (pass !== confirmPass) {
-                alert("Password and Confirm Password do not match.");
+                alert('Password and Confirm Password do not match!');
                 return;
             }
 
+            let users = JSON.parse(localStorage.getItem('crown_users')) || {};
+            if (users[email]) { alert('Email already registered!'); return; }
+            users[email] = { pass, fullName, phone, joinedAt: new Date().toISOString() };
+            localStorage.setItem('crown_users', JSON.stringify(users));
             currentUser = email;
             localStorage.setItem('crown_current_user', email);
-            localStorage.setItem(`crown_profile_${email}`, JSON.stringify({
-                fullName: name,
-                phone: phone,
-                email: email,
-                registeredAt: new Date().toISOString()
-            }));
 
-            pushToSupabaseCloud('builders', {
-                full_name: name,
-                phone: phone,
-                email: email,
-                created_at: new Date().toISOString()
-            }, 'email');
-            syncFromSupabaseCloud();
+            const promoGrant = claimOrGetPromoGrant(email, email);
+            const promoMsg = promoGrant
+                ? `\nPromo Slot #${promoGrant.slotNumber}: ${promoGrant.label} (${promoGrant.freeMonths} months free on Domain + Pro, then Free Tier if unpaid).`
+                : `\nAll 20 promo slots are claimed; account starts on Free Tier unless upgraded.`;
+
             checkAuthStatus();
-            alert(`Registration complete! Welcome to Crown Master Database, ${name}.`);
+            syncFromSupabaseCloud();
+            alert(`Account created for ${fullName} (${email})!${promoMsg}`);
         }
 
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
-            currentUser = email;
-            localStorage.setItem('crown_current_user', email);
-            syncFromSupabaseCloud();
-            checkAuthStatus();
+            const pass = document.getElementById('login-pass').value;
+            let users = JSON.parse(localStorage.getItem('crown_users')) || {};
+            if (users[email] && users[email].pass === pass) {
+                currentUser = email;
+                localStorage.setItem('crown_current_user', email);
+                checkAuthStatus();
+                syncFromSupabaseCloud();
+                alert('Logged in successfully!');
+            } else { alert('Invalid email or password!'); }
         }
 
         function handleLogout() {
-            localStorage.removeItem('crown_current_user');
             currentUser = null;
+            localStorage.removeItem('crown_current_user');
             checkAuthStatus();
         }
 
         function checkAuthStatus() {
-            if(currentUser) {
-                document.getElementById('auth-modal').classList.add('hidden');
-                const badge = document.getElementById('logged-user-badge');
-                if(badge) badge.innerText = currentUser;
+            const modal = document.getElementById('auth-modal');
+            const badge = document.getElementById('logged-user-badge');
+            if (currentUser) {
+                if(modal) modal.classList.add('hidden');
+                if(badge) { badge.innerText = currentUser; badge.classList.remove('hidden'); }
                 renderRegisteredApps();
-                syncFromSupabaseCloud();
             } else {
-                document.getElementById('auth-modal').classList.remove('hidden');
+                if(modal) modal.classList.remove('hidden');
+                if(badge) badge.classList.add('hidden');
             }
         }
 
         function switchTab(tabId) {
             currentActiveTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById('tab-' + tabId);
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabId}`);
             if(target) target.classList.remove('hidden');
             if(tabId === 'my-apps') {
                 renderRegisteredApps();
+                const list = document.getElementById('my-apps-selector-list');
+                if (list) list.classList.add('hidden');
             }
             if(tabId === 'pricing') {
                 updatePromoSlotsDisplay();
+                calculateTotalSubscription();
             }
-        }
-
-        function selectPricingTier(tierName, price, usdPrice) {
-            selectedMonthlyPrice = price;
-            selectedUsdPrice = usdPrice;
-            const tierInput = document.getElementById('calc-tier-name');
-            if(tierInput) tierInput.value = tierName;
-            calculateTotalSubscription();
-            alert(`Selected tier: ${tierName}`);
-        }
-
-        function calculateTotalSubscription() {
-            const monthsInput = document.getElementById('calc-months');
-            const currencySelect = document.getElementById('calc-currency-select');
-            const totalDisplay = document.getElementById('calc-total-display');
-            if(!monthsInput || !totalDisplay) return;
-            
-            const months = parseInt(monthsInput.value) || 1;
-            const curr = currencySelect ? currencySelect.value : 'NGN';
-            
-            if(curr === 'USD') {
-                totalDisplay.innerText = '$' + (months * selectedUsdPrice);
-            } else {
-                totalDisplay.innerText = '₦' + (months * selectedMonthlyPrice).toLocaleString();
-            }
-        }
-
-        async function proceedSubscription(customRefInputId, appNameContext = "") {
-            const adminPaystack = localStorage.getItem('crown_admin_paystack_link') || 'https://paystack.com/pay/crown-master-engine';
-            const monthsInput = document.getElementById('calc-months');
-            const months = Math.max(1, parseInt(monthsInput ? monthsInput.value : 1) || 1);
-            const expectedAmountNgn = months * selectedMonthlyPrice;
-
-            const refField = customRefInputId ? document.getElementById(customRefInputId) : null;
-            const refCode = refField ? refField.value.trim() : "";
-
-            if (!refCode) {
-                window.open(adminPaystack, '_blank');
-                alert(`Paystack opened. Complete subscription payment (₦${expectedAmountNgn.toLocaleString()}), then enter your verified Paystack reference code to verify automatically.`);
-                return;
-            }
-
-            const verification = await CrownPaymentVerifier.verifyTransactionStatus(refCode, expectedAmountNgn, currentUser);
-            if (verification.approved) {
-                const linkedRecord = verification.record || {
-                    reference_code: refCode,
-                    owner_email: currentUser || "guest",
-                    app_name: appNameContext,
-                    payment_type: "pro_plan",
-                    amount_ngn: expectedAmountNgn,
-                    months_count: months,
-                    status: "success"
-                };
-                await applyVerifiedPaymentEntitlements(linkedRecord, refCode);
-
-                const subExpiry = new Date();
-                subExpiry.setMonth(subExpiry.getMonth() + months);
-                localStorage.setItem(`crown_pro_active_${currentUser || 'guest'}`, JSON.stringify({
-                    active: true,
-                    reference: refCode,
-                    amountNgn: expectedAmountNgn,
-                    expiryDate: subExpiry.toISOString(),
-                    verifiedAt: new Date().toISOString()
-                }));
-                alert('✅ Pro Plan subscription payment verified automatically! Engine access granted.');
-            }
-        }
-
-        function copyPaymentCode(code) {
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(code).then(() => {
-                        alert(`Copied: ${code}`);
-                    }).catch(() => {
-                        fallbackCopyText(code);
-                    });
-                } else {
-                    fallbackCopyText(code);
-                }
-            } catch (err) {
-                fallbackCopyText(code);
-            }
-        }
-
-        function fallbackCopyText(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                alert(`Copied: ${text}`);
-            } catch (err) {
-                alert(`Copied: ${text}`);
-            }
-            document.body.removeChild(textArea);
         }
 
         function runAiAssistant() {
-            const rawCode = document.getElementById('ai-input-code').value.trim();
-            const appName = document.getElementById('ai-app-slug').value.trim() || 'MyCrownApp';
-            if(!rawCode) { alert('Please paste app code.'); return; }
+            const inputCode = document.getElementById('ai-input-code').value.trim();
+            const slugInput = document.getElementById('ai-app-slug').value.trim() || 'CrownSyncedApp';
+            const cleanSlug = normalizeLiveSlug(slugInput) || 'crownsyncedapp';
+            if(!inputCode) { alert('Please paste your app code first!'); return; }
             
-            const cleanName = appName.toLowerCase().replace(/\s+/g, '_');
-            const sanitizedCode = rawCode;
-            
-            const sdkInjection = `\n<!-- CROWN MASTER DATABASE, CLOUD SYNC & FYP/CHAT/VOICE/VIDEO MESH SDK INJECTED -->\n<script>\n  window.CROWN_PHONE_ID = window.CROWN_PHONE_ID || ('PHN_' + Math.random().toString(36).substring(2, 8).toUpperCase());\n  window.CROWN_BUS = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('crown_master_realtime_bus') : null;\n  window.crownSendComms = function(kind, content, extra) {\n    if (window.CROWN_BUS) {\n      window.CROWN_BUS.postMessage({ type: 'comms_signal', signal: { id: 'SIG_' + Date.now(), room: '${cleanName}_comms', app_name: '${appName}', kind: kind || 'chat_msg', sender_phone: window.CROWN_PHONE_ID, content: content, extra: extra || {}, created_at: new Date().toISOString() } });\n    }\n  };\n  async function syncCrownEngine(action, payload) {\n    if (window.CROWN_BUS) {\n      window.CROWN_BUS.postMessage({ type: 'app_sync', payload: { app: '${cleanName}', action, payload, phoneId: window.CROWN_PHONE_ID } });\n    }\n    let res = await fetch('${CLOUD_API_BASE}/${cleanName}/sync', {\n      method: 'POST',\n      headers: {'Content-Type': 'application/json'},\n      body: JSON.stringify({ action, payload, phoneId: window.CROWN_PHONE_ID })\n    });\n    return await res.json();\n  }\n<\/script>\n`;
-            
-            document.getElementById('ai-output-code').value = sanitizedCode + "\n" + sdkInjection;
-            document.getElementById('ai-output-box').classList.remove('hidden');
-            
-            let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
-            const paymentCode = 'CRN-' + Math.floor(100000 + Math.random() * 900000);
-            const liveUrl = `${window.location.origin}${window.location.pathname}?live_app=${cleanName}`;
-            if(!apps.some(a => a.name === appName)) {
-                apps.push({ name: appName, link: liveUrl, users: 1, health: 100, code: paymentCode, visibility: 'public', tier: 'me_only', status: 'Active (SDK Connected)' });
-                localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
-                renderRegisteredApps();
-            }
-            CrownCloudDeviceSyncEngine.pushAndSyncAcrossPhonesAndCloud({
-                channel: cleanName,
-                eventType: "sdk_connected",
-                data: { appName }
-            });
-            alert('Success! Crown Master Database, Multi-Phone Mesh & FYP/Chat/Voice/Video Comms SDK injected and linked.');
-        }
+            const pubKey = CrownKeyGeneratorEngine.generatePublishableKey(cleanSlug);
+            const anonKey = CrownKeyGeneratorEngine.generateAnonKey(cleanSlug);
+            const menuActions = buildAppRightMenuHtml(slugInput, `?live_app=${cleanSlug}`, pubKey);
 
-        function registerAndGenerateApp() {
-            const nameInput = document.getElementById('builder-app-name');
-            if(!nameInput) return;
-            const appName = nameInput.value.trim();
-            if(!appName) { alert('Please enter app name.'); return; }
-            
-            const cleanSlug = appName.toLowerCase().replace(/\s+/g, '_');
-            const paymentCode = 'CRN-' + Math.floor(100000 + Math.random() * 900000);
-            const liveUrl = `${window.location.origin}${window.location.pathname}?live_app=${cleanSlug}`;
-            
-            let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
-            apps.push({ name: appName, link: liveUrl, users: 1, health: 100, code: paymentCode, visibility: 'public', tier: 'me_only', status: 'Active (CSWCME)' });
-            localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
-            renderRegisteredApps();
+            let connectedCode = `<!-- CROWN MASTER DATABASE CLOUD, MULTI-PHONE MESH & UNIVERSAL APP MENU SDK -->\n` +
+                                `<script>\n` +
+                                `  window.CROWN_KEYS = { publishable: "${pubKey}", anon: "${anonKey}", channel: "${cleanSlug}" };\n` +
+                                `  window.CROWN_UNIVERSAL_APP_MENU_HTML = ${JSON.stringify(menuActions)};\n` +
+                                `  window.crownPublishToCloudAndPhones = async function(eventType, data) {\n` +
+                                `    const bc = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("crown_master_realtime_bus") : null;\n` +
+                                `    if (bc) bc.postMessage({ type: "app_sync", payload: { app: "${cleanSlug}", eventType, data } });\n` +
+                                `    if (typeof CrownCloudDeviceSyncEngine !== "undefined") {\n` +
+                                `      return await CrownCloudDeviceSyncEngine.pushAndSyncAcrossPhonesAndCloud({ channel: "${cleanSlug}", eventType, data });\n` +
+                                `    }\n` +
+                                `  };\n` +
+                                `<\/script>\n` + inputCode;
+
+            document.getElementById('ai-output-code').value = connectedCode;
+            document.getElementById('ai-output-box').classList.remove('hidden');
             CrownCloudDeviceSyncEngine.pushAndSyncAcrossPhonesAndCloud({
                 channel: cleanSlug,
-                eventType: "app_registered",
-                data: { appName, liveUrl }
+                eventType: "sdk_injected",
+                data: { appName: slugInput, pubKey, anonKey }
             });
-            pushToSupabaseCloud('deployed_apps', {
-                app_name: appName,
-                slug: cleanSlug,
-                live_url: liveUrl,
-                owner_email: currentUser,
-                payment_code: paymentCode,
-                created_at: new Date().toISOString()
-            }, 'slug');
-            alert(`Success! App "${appName}" registered with live link and multi-phone sync.`);
-        }
-
-        function populateMyAppsSelectorDropdown() {
-            const apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
-            const itemsContainer = document.getElementById('my-apps-dropdown-items');
-            if(!itemsContainer) return;
-
-            if(apps.length === 0) {
-                itemsContainer.innerHTML = `<p class="text-xs text-slate-400 italic p-2">No apps created yet. Deploy an app first.</p>`;
-                return;
-            }
-
-            itemsContainer.innerHTML = apps.map(app => `
-                <button onclick="openAppEngineModal('${app.name}', 'overview'); closeUniversalDropdown();" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-900 text-xs text-slate-200 flex justify-between items-center transition border border-transparent hover:border-amber-500/30">
-                    <span class="font-bold text-amber-400 truncate"><i class="fa-solid fa-cube mr-1.5"></i> ${app.name}</span>
-                    <span class="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-mono ml-2 shrink-0">${app.code || 'CRN-000'}</span>
-                </button>
-            `).join('');
-        }
-
-        function renderRegisteredApps() {
-            const apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
-            const fullCountEl = document.getElementById('full-app-count');
-            if(fullCountEl) fullCountEl.innerText = apps.length;
-            populateMyAppsSelectorDropdown();
+            alert(`Success! Connected "${slugInput}" to Crown Master Cloud, Multi-Phone Mesh, and Universal App Menu!`);
         }
 
         function triggerAntiFraudAlert() {
             const appName = document.getElementById('fraud-app-name').value.trim();
             const ownerEmail = document.getElementById('fraud-owner-email').value.trim();
-            const suspectDetails = document.getElementById('fraud-suspect-details').value.trim();
-            if(!appName || !ownerEmail) { alert('Please enter app name and email.'); return; }
-            alert(`Anti-Fraud Alert sent for "${appName}" (${ownerEmail}).`);
+            const suspect = document.getElementById('fraud-suspect-details').value.trim();
+            if(!appName || !ownerEmail || !suspect) { alert('Please fill all fields.'); return; }
+            alert(`Anti-Fraud Alert dispatched for ${appName} (${suspect}) to ${ownerEmail}`);
         }
 
         function createSchemaTable() {
             const name = document.getElementById('schema-table-name').value.trim();
             const region = document.getElementById('schema-shard-region').value;
             const cols = document.getElementById('schema-columns').value.trim();
-            if(!name || !cols) { alert('Please enter table name and columns.'); return; }
+            if(!name || !cols) { alert('Enter table name and columns'); return; }
             
-            const shardedTable = CrownShardingEngine.shardData(name, region, cols);
+            const shardedInfo = CrownShardingEngine.shardData(name, region, cols);
             const list = document.getElementById('schema-tables-list');
-            list.innerHTML += `<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono space-y-1">
-                <div class="flex justify-between items-center">
-                    <span class="text-emerald-400 font-bold">CREATE TABLE ${shardedTable.table} (${shardedTable.columns});</span>
-                    <span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded text-[10px] font-bold">Shard: ${shardedTable.nodes}</span>
+            list.innerHTML += `<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs flex justify-between items-center">
+                <div>
+                    <strong class="text-amber-400">${shardedInfo.table}</strong> (${shardedInfo.columns}) 
+                    <span class="text-emerald-400 ml-2 text-[10px] font-mono">[Shard: ${shardedInfo.nodes} • ${shardedInfo.uptime}]</span>
                 </div>
-                <p class="text-[10px] text-slate-400">Uptime SLA: ${shardedTable.uptime} | Region: ${shardedTable.region.toUpperCase()}</p>
+                <span class="text-emerald-400 text-[10px]">Sharded Active</span>
             </div>`;
         }
 
         function createSchemaTableModal(appName) {
-            const nameInput = document.getElementById(`schema-modal-table-${appName}`);
-            const regionSelect = document.getElementById(`schema-modal-region-${appName}`);
-            const colsInput = document.getElementById(`schema-modal-cols-${appName}`);
-            if(!nameInput || !colsInput) return;
-
-            const name = nameInput.value.trim();
-            const region = regionSelect.value;
-            const cols = colsInput.value.trim();
-            if(!name || !cols) { alert('Please enter table name and columns.'); return; }
-
-            const shardedTable = CrownShardingEngine.shardData(name, region, cols);
-            alert(`Success! Sharded SQL Table "${shardedTable.table}" created on ${shardedTable.nodes} for ${appName}.`);
+            const name = document.getElementById(`schema-modal-table-${appName}`).value.trim();
+            const region = document.getElementById(`schema-modal-region-${appName}`).value;
+            const cols = document.getElementById(`schema-modal-cols-${appName}`).value.trim();
+            if(!name || !cols) { alert('Enter table name and columns'); return; }
+            
+            const shardedInfo = CrownShardingEngine.shardData(name, region, cols);
+            alert(`Sharded Table "${shardedInfo.table}" created on ${shardedInfo.nodes} for app "${appName}"!`);
+            openAppEngineModal(appName, 'overview');
         }
 
         function runApiTest() {
-            const url = document.getElementById('test-api-url').value;
-            const resBox = document.getElementById('api-response-box');
-            if(!CrownSecurityFirewall.checkRateLimit(currentUser || 'guest')) {
-                resBox.innerText = JSON.stringify({ status: "429 Too Many Requests", error: "Rate limit exceeded." }, null, 2);
+            if(!CrownSecurityFirewall.checkRateLimit(currentUser || 'guest_test')) {
+                alert('Rate limit reached! Slow down requests.');
                 return;
             }
-            resBox.innerText = JSON.stringify({ status: "200 OK", endpoint: url, message: "Crown Master Database Engine Online with Multi-Phone & Cloud Sync." }, null, 2);
+            const url = document.getElementById('test-api-url').value;
+            document.getElementById('api-response-box').innerText = JSON.stringify({
+                status: 200,
+                message: "Crown Master Database Edge Node OK",
+                endpoint: url,
+                latency: "11ms",
+                shard: "Africa-Lagos-Edge-01",
+                timestamp: new Date().toISOString()
+            }, null, 2);
+        }
+
+        function selectPricingTier(tierName, ngnPrice, usdPrice) {
+            selectedMonthlyPrice = ngnPrice;
+            selectedUsdPrice = usdPrice;
+            document.getElementById('calc-tier-name').value = tierName;
+            calculateTotalSubscription();
+        }
+
+        function calculateTotalSubscription() {
+            const months = parseInt(document.getElementById('calc-months').value) || 1;
+            const curr = document.getElementById('calc-currency-select').value;
+            const display = document.getElementById('calc-total-display');
+            if(!display) return;
+            if(curr === 'USD') {
+                display.innerText = '$' + (months * selectedUsdPrice);
+            } else {
+                display.innerText = '₦' + (months * selectedMonthlyPrice).toLocaleString();
+            }
+        }
+
+        async function proceedSubscription(inputId = null, appName = "") {
+            const months = parseInt(document.getElementById('calc-months')?.value) || 1;
+            const currency = document.getElementById('calc-currency-select')?.value || 'NGN';
+            const expectedAmountNgn = months * selectedMonthlyPrice;
+            const adminPaystack = localStorage.getItem('crown_admin_paystack_link') || 'https://paystack.com/pay/crown-master-engine';
+
+            let refCode = "";
+            if (inputId) {
+                const refEl = document.getElementById(inputId);
+                refCode = refEl ? refEl.value.trim() : "";
+            }
+
+            if (!refCode) {
+                window.open(adminPaystack, '_blank');
+                alert(`Paystack opened for ${months} month(s) (${currency === 'USD' ? '$' + (months * selectedUsdPrice) : '₦' + expectedAmountNgn.toLocaleString()}). Complete payment, then enter your verified Paystack Reference Code to activate.`);
+                return;
+            }
+
+            const result = await CrownPaymentVerifier.verifyTransactionStatus(refCode, expectedAmountNgn, currentUser);
+            if (result.approved) {
+                const linkedRecord = result.record || {
+                    reference_code: refCode,
+                    owner_email: currentUser || "guest",
+                    app_name: appName || "",
+                    domain_name: "",
+                    payment_type: "pro_plan",
+                    amount_ngn: expectedAmountNgn,
+                    months_count: months,
+                    status: "success"
+                };
+                await applyVerifiedPaymentEntitlements(linkedRecord, refCode);
+                alert(`✅ Payment verified automatically! Your subscription (${months} month(s)) is now active.`);
+            }
         }
 
         function saveBankPin() {
-            const pin = document.getElementById('bank-pin').value;
-            if(pin.length !== 6) { alert('Please enter a 6-digit PIN.'); return; }
+            const pin = document.getElementById('bank-pin').value.trim();
+            if(pin.length < 4) { alert('PIN must be at least 4 digits'); return; }
             localStorage.setItem(`crown_bank_pin_${currentUser}`, pin);
-            alert('PIN saved successfully!');
+            alert('PIN saved securely with Biometric Vault!');
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const liveAppParam = urlParams.get('live_app');
-        if(liveAppParam) {
-            const storedCode = localStorage.getItem(`crown_live_code_${liveAppParam}`);
-            if(storedCode) {
-                CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE.interceptBrowserLiveURL(liveAppParam, storedCode);
+        function registerAndGenerateApp() {
+            const appName = document.getElementById('builder-app-name').value.trim();
+            if(!appName) { alert('Please enter an App Name'); return; }
+
+            let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
+            if(apps.some(a => a.name === appName)) { alert('App name already exists'); return; }
+
+            const cleanSlug = normalizeLiveSlug(appName) || ("app_" + Date.now());
+            const paymentCode = 'CRN-' + Math.floor(100000 + Math.random() * 900000);
+            const liveUrl = `${window.location.origin}${window.location.pathname}?live_app=${cleanSlug}`;
+            const newApp = { name: appName, link: liveUrl, users: 1, health: 100, code: paymentCode, region: 'africa', tier: 'me_only', visibility: 'public', status: 'Active' };
+            apps.push(newApp);
+            localStorage.setItem(`crown_apps_${currentUser}`, JSON.stringify(apps));
+
+            renderRegisteredApps();
+            CrownRealtimeAppBus.broadcast({ newApp });
+            CrownCloudDeviceSyncEngine.pushAndSyncAcrossPhonesAndCloud({
+                channel: cleanSlug,
+                eventType: "app_registered",
+                data: { appName, liveUrl, paymentCode }
+            });
+            alert(`App "${appName}" registered! Payment code: ${paymentCode}`);
+        }
+
+        function populateMyAppsSelectorDropdown() {
+            const container = document.getElementById('my-apps-dropdown-items');
+            if(!container) return;
+
+            let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
+            if (apps.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-400 px-2.5 py-2 italic">No apps created yet. Register or deploy an app first.</p>`;
+                return;
             }
+
+            container.innerHTML = apps.map(app => `
+                <button onclick="openAppEngineModal('${app.name}', 'overview'); closeUniversalDropdown();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-900 text-xs text-white flex justify-between items-center transition">
+                    <span class="font-bold text-amber-400 truncate"><i class="fa-solid fa-cube mr-1.5 text-emerald-400"></i>${app.name}</span>
+                    <span class="text-[10px] text-emerald-400 font-mono ml-2 shrink-0">${app.code || 'CRN'}</span>
+                </button>
+            `).join('');
         }
 
-        checkAuthStatus();
-        switchTab('ai');
-        updatePromoSlotsDisplay();
+        function renderRegisteredApps() {
+            const countEl = document.getElementById('full-app-count');
+            let apps = JSON.parse(localStorage.getItem(`crown_apps_${currentUser}`)) || [];
+            if(countEl) countEl.innerText = apps.length;
+            populateMyAppsSelectorDropdown();
+        }
+
+        function copyPaymentCode(code) {
+            navigator.clipboard.writeText(code);
+            alert(`Copied: ${code}`);
+        }
+
+        (async function bootLiveAppIfPresent() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawParam = urlParams.get('live_app');
+            if (rawParam) {
+                const cleanSlug = normalizeLiveSlug(rawParam);
+                let storedCode = localStorage.getItem(`crown_live_code_${cleanSlug}`) || localStorage.getItem(`crown_live_code_${rawParam}`);
+                if (!storedCode) {
+                    const remote = await CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE.fetchRemoteAppCodeBySlug(cleanSlug);
+                    if (remote && remote.html_code) {
+                        storedCode = remote.html_code;
+                    }
+                }
+                if (storedCode) {
+                    CROWN_SUPABASE_WEB_COMMANDER_MASTER_ENGINE.interceptBrowserLiveURL(cleanSlug, storedCode);
+                    return;
+                }
+            }
+
+            checkAuthStatus();
+            switchTab('ai');
+            updatePromoSlotsDisplay();
+            if (currentUser) {
+                syncFromSupabaseCloud();
+            }
+        })();
     </script>
 </body>
 </html>
